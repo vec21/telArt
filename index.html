@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tel'Art — Kits, Buquês e Presentes</title>
+  <meta name="description" content="Tel'Art — Kits femininos, skincare, buquês, presentes personalizados. Compre pelo WhatsApp ou peça orçamento." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="theme-color" content="#F45B5B">
+</head>
+<body class="theme-light">
+
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <div class="brand">
+        <!-- Logo em arquivo assets/logo1.png -->
+        <img src="assets/logo.png" alt="Logotipo Tel'Art" class="logo-img" width="56" height="56">
+        <div>
+          <div class="brand-name">Tel'Art</div>
+          <div class="brand-tag">O toque mágico para não espumar</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navegação principal">
+        <ul class="nav-list">
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-controls">
+        <a class="btn btn-ghost" id="whatsappBtn" href="https://wa.me/244923862830" target="_blank" rel="noopener">Compre pelo WhatsApp</a>
+        <button id="menuToggle" class="hamburger" aria-expanded="false" aria-controls="mobileMenu" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <ul>
+        <li><a href="catalogo.html">Catálogo</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <h1 class="hero-title">Tel'Art — presentes que encantam</h1>
+          <p class="hero-sub">Kits femininos, skincare, buquês artesanais e presentes personalizados — entregue em todo o país. Compre rápido pelo WhatsApp ou peça um orçamento.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="catalogo.html">Ver Catálogo</a>
+            <a class="btn btn-accent" href="contacto.html">Entre em contacto</a>
+          </div>
+          <ul class="trust-logotypes" aria-hidden="true">
+            <li>Feito à mão • Embalagem para presente • Atendimento personalizado</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="device-mock">
+            <div class="device-body">
+              <div class="card">
+                <h3>Entrega segura</h3>
+                <p>Envio rápido e cuidado artesanal na embalagem.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="section newsletter-section alt" aria-labelledby="newsletter-title">
+      <div class="container newsletter-inner">
+        <div class="newsletter-copy">
+          <p class="eyebrow">Lista VIP Tel'Art</p>
+          <h2 id="newsletter-title">Receba novidades e lançamentos em primeira mão</h2>
+          <p class="section-lead">Kits exclusivos, campanhas sazonais e descontos relâmpago direto no seu e-mail.</p>
+        </div>
+        <form id="newsletterForm" class="newsletter-form" novalidate>
+          <label class="field">
+            <span class="label-text">E-mail *</span>
+            <input type="email" id="newsletterEmail" name="newsletterEmail" placeholder="voce@email.com" required>
+          </label>
+          <button type="submit" class="btn btn-primary btn-lg">Quero fazer parte</button>
+          <div id="newsletterStatus" class="form-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container cta-inner">
+        <div>
+          <h2>Explore nossos produtos e serviços</h2>
+          <p>Descubra kits personalizados, buquês artesanais e muito mais. Tudo com o toque mágico da Tel'Art.</p>
+        </div>
+        <div>
+          <a class="btn btn-accent btn-lg" href="contacto.html">Entre em contacto</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> Tel'Art — Todos os direitos reservados.</div>
+      <nav aria-label="Rodapé">
+        <ul class="footer-links">
+          <li><a href="#top">Topo</a></li>
+          <li><a href="#policies">Políticas</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catálogo — Tel'Art</title>
+  <meta name="description" content="Catálogo completo Tel'Art — Kits femininos, cosméticos, produtos de cuidado pessoal, decoração e presentes personalizados. O toque mágico para não espumar." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="theme-color" content="#F45B5B">
+</head>
+<body class="theme-light">
+  <a class="skip-link" href="#main">Ir para o conteúdo</a>
+
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <div class="brand">
+        <a href="index.html">
+          <img src="assets/logo.png" alt="Logotipo Tel'Art" class="logo-img" width="56" height="56">
+        </a>
+        <div>
+          <a href="index.html" class="brand-name">Tel'Art</a>
+          <div class="brand-tag">O toque mágico para não espumar</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navegação principal">
+        <ul class="nav-list">
+          <li><a href="catalogo.html" class="active">Catálogo</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-controls">
+        <a class="btn btn-ghost" id="whatsappBtn" href="https://wa.me/244923862830" target="_blank" rel="noopener">Compre pelo WhatsApp</a>
+        <button id="menuToggle" class="hamburger" aria-expanded="false" aria-controls="mobileMenu" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <ul>
+        <li><a href="catalogo.html">Catálogo</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Header da página -->
+    <section class="page-header">
+      <div class="container">
+        <h1>Catálogo Tel'Art</h1>
+        <p>Kits femininos, cosméticos, cuidado pessoal, decoração e presentes personalizados — preços em Kz (AOA)</p>
+      </div>
+    </section>
+
+    <!-- Filtros de categoria -->
+    <section class="catalog-filters">
+      <div class="container">
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-category="all">Todos os produtos</button>
+          <button class="filter-btn" data-category="Kit Bloguerinha">Kits Bloguerinha</button>
+          <button class="filter-btn" data-category="Kits de Skincare">Skincare</button>
+          <button class="filter-btn" data-category="Buquês">Buquês</button>
+          <button class="filter-btn" data-category="Cestas">Cestas</button>
+          <button class="filter-btn" data-category="Canecas">Canecas</button>
+          <button class="filter-btn" data-category="Cantis">Cantis</button>
+          <button class="filter-btn" data-category="Caixa Explosiva">Caixas Explosivas</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catálogo -->
+    <section id="catalog" class="section">
+      <div class="container">
+        <p class="section-lead">Clique em "Adicionar" para juntar na sua seleção; depois exporte a lista para imprimir ou enviar pelo WhatsApp.</p>
+
+        <div class="products-grid" id="catalogGrid" aria-live="polite">
+          <!-- Produtos gerados via JS -->
+        </div>
+
+        <div class="catalog-actions">
+          <button id="exportList" class="btn btn-primary">Exportar lista / Imprimir</button>
+          <button id="clearCart" class="btn btn-ghost">Limpar seleção</button>
+          <a id="buyWhatsApp" class="btn btn-accent" href="#" target="_blank" rel="noopener">Comprar pelo WhatsApp</a>
+        </div>
+
+        <div id="cartSummary" class="cart-summary" aria-live="polite">
+          <strong>Seleção:</strong> <span id="cartCount">0</span> item(s) • Total: Kz <span id="cartTotal">0,00</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pedido de orçamento rápido -->
+    <section class="section quote-section" aria-labelledby="quote-title">
+      <div class="container">
+        <div class="quote-card">
+          <div class="quote-copy">
+            <p class="eyebrow">Pedido de orçamento rápido</p>
+            <h2 id="quote-title">Conte-nos o que precisa e respondemos em minutos</h2>
+            <p class="section-lead">Ideal para personalizar kits, buquês, caixas explosivas ou cestas com o seu orçamento.</p>
+          </div>
+          <form id="quoteForm" class="quote-form" novalidate>
+            <div class="form-grid">
+              <label class="field">
+                <span class="label-text">Nome completo *</span>
+                <input type="text" id="quoteName" name="quoteName" placeholder="O seu nome" minlength="2" required>
+                <span class="error" id="err-quote-name" aria-live="polite"></span>
+              </label>
+              <label class="field">
+                <span class="label-text">WhatsApp ou e-mail *</span>
+                <input type="text" id="quoteContact" name="quoteContact" placeholder="+244 9XX XXX XXX" required>
+                <span class="error" id="err-quote-contact" aria-live="polite"></span>
+              </label>
+            </div>
+
+            <div class="form-grid">
+              <label class="field">
+                <span class="label-text">Categoria *</span>
+                <select id="quoteCategory" name="quoteCategory" required>
+                  <option value="">Selecione</option>
+                  <option>Kit Bloguerinha</option>
+                  <option>Kits de Skincare</option>
+                  <option>Buquês</option>
+                  <option>Cestas</option>
+                  <option>Canecas</option>
+                  <option>Cantis</option>
+                  <option>Caixa Explosiva</option>
+                  <option>Outro item personalizado</option>
+                </select>
+                <span class="error" id="err-quote-category" aria-live="polite"></span>
+              </label>
+              <label class="field">
+                <span class="label-text">Orçamento aproximado (Kz) *</span>
+                <input type="number" id="quoteBudget" name="quoteBudget" min="1000" step="500" placeholder="Ex: 20 000" required>
+                <span class="error" id="err-quote-budget" aria-live="polite"></span>
+              </label>
+            </div>
+
+            <label class="field full">
+              <span class="label-text">Detalhes / ocasião *</span>
+              <textarea id="quoteDetails" name="quoteDetails" rows="4" placeholder="Conte-nos sobre a ocasião, preferências de cores, quantidade, data de entrega..." required></textarea>
+              <span class="error" id="err-quote-details" aria-live="polite"></span>
+            </label>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-lg">Quero o orçamento agora</button>
+              <div id="quoteStatus" class="form-status" role="status" aria-live="polite"></div>
+            </div>
+            <small class="form-footnote">Utilizamos o WhatsApp para responder rapidamente e enviar inspirações personalizadas.</small>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Galeria de imagens -->
+    <section class="gallery-section section alt">
+      <div class="container">
+        <h2 class="section-title">Galeria de produtos</h2>
+        <p class="section-lead">Conheça alguns dos nossos produtos e o cuidado artesanal em cada detalhe.</p>
+
+        <div class="gallery-grid">
+          <figure class="gallery-item">
+            <img src="assets/produtos/KitBloguerinha/IMG-20251018-WA0050.jpg" alt="Kit Bloguerinha Tel'Art">
+            <figcaption>Kits Bloguerinha</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="assets/produtos/KitsSkincare/KitSkincare1.jpg" alt="Produtos skincare Tel'Art">
+            <figcaption>Produtos Skincare</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="assets/produtos/Serviços/BuqueNatural1.jpg" alt="Buquês artesanais Tel'Art">
+            <figcaption>Buquês Artesanais</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="assets/produtos/Serviços/CestaPequeno-almoço1.jpg" alt="Cestas personalizadas Tel'Art">
+            <figcaption>Cestas Personalizadas</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="assets/produtos/Canecas/CanecaMágica1.jpg" alt="Canecas mágicas Tel'Art">
+            <figcaption>Canecas Mágicas</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="assets/produtos/Serviços/CaixaExplosiva2.jpg" alt="Caixas explosivas Tel'Art">
+            <figcaption>Caixas Explosivas</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vídeo institucional -->
+    <section class="video-section section">
+      <div class="container">
+        <h2 class="section-title">Conheça a Tel'Art</h2>
+        <p class="section-lead">Veja nosso vídeo institucional e descubra o processo de criação dos nossos produtos.</p>
+
+        <div class="video-wrap">
+          <!-- Usando vídeo local do Kit Bloguerinha -->
+          <video controls width="100%" height="480" poster="assets/produtos/KitBloguerinha/IMG-20251018-WA0050.jpg">
+            <source src="assets/galeria/videos/vidKitBloguerinha.mp4" type="video/mp4">
+            <source src="assets/galeria/videos/2.mp4" type="video/mp4">
+            Seu navegador não suporta o elemento de vídeo.
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container cta-inner">
+        <div>
+          <h2>Encontrou o que procurava?</h2>
+          <p>Entre em contacto conosco para fazer sua encomenda ou esclarecer dúvidas sobre nossos produtos.</p>
+        </div>
+        <div>
+          <a class="btn btn-accent btn-lg" href="contacto.html">Fazer encomenda</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> Tel'Art — Todos os direitos reservados.</div>
+      <nav aria-label="Rodapé">
+        <ul class="footer-links">
+          <li><a href="index.html">Início</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/catalogo.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contacto — Tel'Art</title>
+  <meta name="description" content="Entre em contacto com a Tel'Art — WhatsApp, email e localização. O toque mágico para não espumar." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="theme-color" content="#F45B5B">
+</head>
+<body class="theme-light">
+  <a class="skip-link" href="#main">Ir para o conteúdo</a>
+
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <div class="brand">
+        <a href="index.html">
+          <img src="assets/logo.png" alt="Logotipo Tel'Art" class="logo-img" width="56" height="56">
+        </a>
+        <div>
+          <a href="index.html" class="brand-name">Tel'Art</a>
+          <div class="brand-tag">O toque mágico para não espumar</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navegação principal">
+        <ul class="nav-list">
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="contacto.html" class="active">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-controls">
+        <a class="btn btn-ghost" id="whatsappBtn" href="https://wa.me/244923862830" target="_blank" rel="noopener">Compre pelo WhatsApp</a>
+        <button id="menuToggle" class="hamburger" aria-expanded="false" aria-controls="mobileMenu" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <ul>
+        <li><a href="catalogo.html">Catálogo</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Header da página -->
+    <section class="page-header">
+      <div class="container">
+        <h1>Entre em contacto</h1>
+        <p>Estamos aqui para ajudar com seus pedidos personalizados</p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+      <div class="container">
+        <div class="contact-intro">
+          <h2 class="section-title">Como podemos ajudar?</h2>
+          <p class="section-lead">Entre em contacto conosco através dos canais abaixo ou envie-nos uma mensagem direta.</p>
+        </div>
+
+        <div class="contact-methods-grid">
+          <div class="contact-method">
+            <div class="contact-icon">📱</div>
+            <h3>WhatsApp</h3>
+            <p>Resposta rápida e directa</p>
+            <a class="btn btn-accent" href="https://wa.me/244923862830" target="_blank" rel="noopener">
+              +244 923 862 830
+            </a>
+          </div>
+          <div class="contact-method">
+            <div class="contact-icon">✉️</div>
+            <h3>E-mail</h3>
+            <p>Para orçamentos detalhados</p>
+            <a class="btn btn-outline" href="mailto:contato@telart.ao">
+              contato@telart.ao
+            </a>
+          </div>
+          <div class="contact-method">
+            <div class="contact-icon">📍</div>
+            <h3>Localização</h3>
+            <p>Luanda, Angola</p>
+            <div class="contact-hours">
+              <small>Seg–Sex: 9h–18h<br>Sáb: 9h–14h</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="contact-form-section section alt">
+      <div class="container">
+        <div class="form-container">
+          <div class="form-header">
+            <h2>Envie-nos uma mensagem</h2>
+            <p>Preencha o formulário abaixo e responderemos em até 24 horas.</p>
+          </div>
+
+          <form id="contactForm" class="contact-form" novalidate>
+            <div class="form-row">
+              <label class="field">
+                <span class="label-text">Nome completo *</span>
+                <input type="text" name="name" id="name" required minlength="2" placeholder="O seu nome">
+                <span class="error" id="err-name" aria-live="polite"></span>
+              </label>
+
+              <label class="field">
+                <span class="label-text">E-mail *</span>
+                <input type="email" name="email" id="email" required placeholder="seuemail@exemplo.com">
+                <span class="error" id="err-email" aria-live="polite"></span>
+              </label>
+            </div>
+
+            <div class="form-row">
+              <label class="field">
+                <span class="label-text">Telefone (opcional)</span>
+                <input type="tel" name="phone" id="phone" placeholder="+244 9XX XXX XXX">
+              </label>
+
+              <label class="field">
+                <span class="label-text">Assunto *</span>
+                <select name="subject" id="subject" required>
+                  <option value="">Selecione um assunto</option>
+                  <option value="produto-personalizado">Produto personalizado</option>
+                  <option value="orcamento">Pedido de orçamento</option>
+                  <option value="duvidas">Dúvidas sobre produtos</option>
+                  <option value="encomenda">Nova encomenda</option>
+                  <option value="outros">Outros</option>
+                </select>
+                <span class="error" id="err-subject" aria-live="polite"></span>
+              </label>
+            </div>
+
+            <label class="field full">
+              <span class="label-text">Mensagem *</span>
+              <textarea name="message" id="message" required rows="6" placeholder="Descreva o que precisa, incluindo detalhes sobre personalização, quantidade, prazo, etc."></textarea>
+              <span class="error" id="err-message" aria-live="polite"></span>
+            </label>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <span>Enviar mensagem</span>
+              </button>
+              <div id="formStatus" role="status" aria-live="polite" class="form-status"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq section">
+      <div class="container">
+        <div class="faq-header">
+          <h2 class="section-title">Perguntas frequentes</h2>
+          <p class="section-lead">Respostas às dúvidas mais comuns sobre nossos produtos e serviços.</p>
+        </div>
+        
+        <div class="faq-grid">
+          <div class="faq-item">
+            <div class="faq-icon">🛒</div>
+            <h4>Como fazer uma encomenda?</h4>
+            <p>Pode encomendar através do WhatsApp (+244 923 862 830), e-mail ou formulário acima. Envie-nos os detalhes e faremos um orçamento personalizado.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-icon">🚚</div>
+            <h4>Fazem entregas em todo o país?</h4>
+            <p>Sim, fazemos entregas em todo o território nacional. Os custos de envio variam conforme a localização e serão informados no orçamento.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-icon">⏰</div>
+            <h4>Qual é o prazo de entrega?</h4>
+            <p>Geralmente entre 3 a 7 dias úteis para produtos standard. Produtos personalizados podem demorar de 7 a 14 dias, dependendo da complexidade.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-icon">🎨</div>
+            <h4>Posso personalizar os produtos?</h4>
+            <p>Sim! Nossa especialidade são produtos personalizados. Entre em contacto para discutirmos suas necessidades específicas - "o toque mágico para não espumar".</p>
+          </div>
+        </div>
+
+        <div class="faq-cta">
+          <p>Não encontrou a resposta que procurava?</p>
+          <a href="https://wa.me/244923862830" class="btn btn-outline" target="_blank" rel="noopener">
+            Fale conosco no WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container cta-inner">
+        <div>
+          <h2>Pronto para fazer a sua encomenda?</h2>
+          <p>Entre em contacto conosco agora e receba o seu orçamento personalizado.</p>
+        </div>
+        <div>
+          <a class="btn btn-accent btn-lg" href="https://wa.me/244923862830" target="_blank" rel="noopener">Contactar pelo WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> Tel'Art — Todos os direitos reservados.</div>
+      <nav aria-label="Rodapé">
+        <ul class="footer-links">
+          <li><a href="index.html">Início</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
