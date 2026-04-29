@@ -1,12 +1,13 @@
 # SPEC — Spec-Driven Development (SDD)
 
 > **Projecto:** adrianaTelArt — Integração de formulário com Supabase + Deploy Vercel
-> **Versão:** 1.1.0
+> **Versão:** 1.2.0
 > **Estado:** Em execução
 > **Owner:** Veríssimo
 > **Última actualização:** 2026-04-29
 
 ## Changelog
+- **1.2.0** — Adicionado segundo formulário (newsletter em `index.html`). Nova tabela `newsletter`. Scripts Supabase incluídos também em `index.html`.
 - **1.1.0** — Pós-análise (Fase §4). Stack real é HTML+CSS+JS vanilla (não Next.js). Schema estendido com `assunto` e `telefone`. Estratégia de envs adaptada a site estático. MCPs Supabase e Vercel obrigatórios.
 - **1.0.0** — Versão inicial.
 
@@ -41,10 +42,10 @@ Integrar o formulário existente (`#contactForm` em `contacto.html`) com Supabas
 ## 2. Escopo
 
 ### 2.1. IN SCOPE
-- Provisionar Supabase + tabela `formulario` via **MCP Supabase**
-- Cliente Supabase via CDN em `contacto.html`
-- Substituir `setTimeout` fake em `js/app.js` por `INSERT` real
-- Manter UX existente (validação, `#formStatus`, reset)
+- Provisionar Supabase + tabelas `formulario` e `newsletter` via **MCP Supabase**
+- Cliente Supabase via CDN em `contacto.html` e `index.html`
+- Substituir `setTimeout` fake em `js/app.js` (`initContactForm` e `initNewsletterForm`) por `INSERT` real
+- Manter UX existente (validação, status, reset)
 - Deploy estático Vercel via **MCP Vercel**
 
 ### 2.2. OUT OF SCOPE
@@ -98,7 +99,7 @@ Campos:
 - Confirmar projecto activo: `mcp_supabase_get_project_url`, `mcp_supabase_get_publishable_keys`.
 - Guardar URL e anon key.
 
-### 5.2. Schema da tabela `formulario`
+### 5.2. Schema das tabelas
 
 ```sql
 create table public.formulario (
@@ -108,6 +109,12 @@ create table public.formulario (
   telefone    text,
   assunto     text not null,
   mensagem    text not null,
+  created_at  timestamptz not null default now()
+);
+
+create table public.newsletter (
+  id          uuid primary key default gen_random_uuid(),
+  email       text not null unique,
   created_at  timestamptz not null default now()
 );
 ```

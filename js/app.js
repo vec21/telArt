@@ -81,7 +81,7 @@
     const status = $('#newsletterStatus');
     const emailInput = $('#newsletterEmail');
 
-    form.addEventListener('submit', (ev)=>{
+    form.addEventListener('submit', async (ev)=>{
       ev.preventDefault();
       if(status){
         status.textContent = '';
@@ -105,15 +105,47 @@
         status.style.color = '#7a5c5c';
       }
 
-      setTimeout(()=>{
+      const client = window.supabaseClient;
+      if(!client){
         if(status){
-          status.textContent = 'Obrigada! Você fará parte da nossa lista VIP.';
-          status.style.color = '#22c55e';
+          status.textContent = 'Serviço indisponível. Tente novamente mais tarde.';
+          status.style.color = '#dc2626';
         }
-        localStorage.setItem('telart-newsletter-email', email);
-        form.reset();
         if(submitBtn) submitBtn.disabled = false;
-      }, 900);
+        return;
+      }
+
+      try {
+        const { error } = await client.from('newsletter').insert({ email });
+        if(error){
+          if(error.code === '23505'){
+            if(status){
+              status.textContent = 'Este e-mail já está na nossa lista. Obrigada!';
+              status.style.color = '#22c55e';
+            }
+            form.reset();
+          } else {
+            if(status){
+              status.textContent = 'Não foi possível subscrever. Tente novamente.';
+              status.style.color = '#dc2626';
+            }
+          }
+        } else {
+          if(status){
+            status.textContent = 'Obrigada! Você fará parte da nossa lista VIP.';
+            status.style.color = '#22c55e';
+          }
+          localStorage.setItem('telart-newsletter-email', email);
+          form.reset();
+        }
+      } catch (_e) {
+        if(status){
+          status.textContent = 'Erro de ligação. Verifique a sua internet e tente novamente.';
+          status.style.color = '#dc2626';
+        }
+      } finally {
+        if(submitBtn) submitBtn.disabled = false;
+      }
     });
   }
 
