@@ -1,0 +1,7 @@
+# Local config (não comitar)
+js/supabase-config.js
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

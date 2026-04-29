@@ -142,7 +142,7 @@
       }
     }
 
-    contactForm.addEventListener('submit', (ev)=>{
+    contactForm.addEventListener('submit', async (ev)=>{
       ev.preventDefault();
       clearContactErrors();
 
@@ -150,6 +150,8 @@
       const email = fields.email.value.trim();
       const subject = fields.subject.value.trim();
       const message = fields.message.value.trim();
+      const phoneEl = document.getElementById('phone');
+      const phone = phoneEl ? phoneEl.value.trim() : '';
 
       let ok = true;
       if(name.length < 2){ errors.name.textContent = 'Informe seu nome completo.'; ok = false; }
@@ -166,14 +168,44 @@
         status.style.color = '#7a5c5c';
       }
 
-      setTimeout(()=>{
+      const client = window.supabaseClient;
+      if(!client){
         if(status){
-          status.textContent = 'Mensagem enviada com sucesso! Responderemos em até 24 horas.';
-          status.style.color = '#22c55e';
+          status.textContent = 'Serviço indisponível. Tente novamente mais tarde.';
+          status.style.color = '#dc2626';
         }
-        contactForm.reset();
         if(submitBtn) submitBtn.disabled = false;
-      }, 1500);
+        return;
+      }
+
+      try {
+        const { error } = await client.from('formulario').insert({
+          nome: name,
+          email,
+          telefone: phone || null,
+          assunto: subject,
+          mensagem: message
+        });
+        if(error){
+          if(status){
+            status.textContent = 'Não foi possível enviar a mensagem. Tente novamente.';
+            status.style.color = '#dc2626';
+          }
+        } else {
+          if(status){
+            status.textContent = 'Mensagem enviada com sucesso! Responderemos em até 24 horas.';
+            status.style.color = '#22c55e';
+          }
+          contactForm.reset();
+        }
+      } catch (_e) {
+        if(status){
+          status.textContent = 'Erro de ligação. Verifique a sua internet e tente novamente.';
+          status.style.color = '#dc2626';
+        }
+      } finally {
+        if(submitBtn) submitBtn.disabled = false;
+      }
     });
   }
 
