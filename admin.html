@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Tel'Art</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="favicon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+  <!-- Login -->
+  <section id="loginSection" class="admin-login" hidden>
+    <div class="admin-login-card">
+      <h1>Tel'Art Admin</h1>
+      <p class="muted">Aceda ao painel de gestão.</p>
+      <form id="loginForm" novalidate>
+        <label class="field">
+          <span class="label-text">E-mail</span>
+          <input type="email" id="loginEmail" required autocomplete="email" />
+        </label>
+        <label class="field">
+          <span class="label-text">Palavra-passe</span>
+          <input type="password" id="loginPassword" required autocomplete="current-password" minlength="6" />
+        </label>
+        <button type="submit" class="btn btn-primary btn-lg" id="loginBtn">Entrar</button>
+        <div id="loginStatus" class="form-status" role="status" aria-live="polite"></div>
+      </form>
+      <p class="admin-back"><a href="index.html">← Voltar ao site</a></p>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dashboardSection" class="admin-dashboard" hidden>
+    <header class="admin-header">
+      <div class="admin-header-inner">
+        <div class="admin-brand">
+          <strong>Tel'Art</strong>
+          <span class="muted">Painel admin</span>
+        </div>
+        <div class="admin-user">
+          <span id="userEmail" class="muted"></span>
+          <button type="button" id="logoutBtn" class="btn btn-outline btn-sm">Sair</button>
+        </div>
+      </div>
+      <nav class="admin-tabs" role="tablist">
+        <button type="button" class="admin-tab active" data-tab="mensagens" role="tab">Mensagens <span id="tabMensagensCount" class="badge"></span></button>
+        <button type="button" class="admin-tab" data-tab="newsletter" role="tab">Newsletter <span id="tabNewsletterCount" class="badge"></span></button>
+        <button type="button" class="admin-tab disabled" data-tab="produtos" role="tab" disabled title="Em breve (Fase 2.1)">Produtos</button>
+        <button type="button" class="admin-tab disabled" data-tab="encomendas" role="tab" disabled title="Em breve (Fase 2.2)">Encomendas</button>
+        <button type="button" class="admin-tab disabled" data-tab="settings" role="tab" disabled title="Em breve (Fase 2.3)">Configurações</button>
+        <button type="button" class="admin-tab disabled" data-tab="stats" role="tab" disabled title="Em breve (Fase 2.4)">Estatísticas</button>
+      </nav>
+    </header>
+
+    <main class="admin-main">
+      <!-- Mensagens -->
+      <section id="panelMensagens" class="admin-panel active" role="tabpanel">
+        <div class="admin-toolbar">
+          <h2>Mensagens de contacto</h2>
+          <div class="admin-toolbar-actions">
+            <select id="filterStatus" class="admin-select">
+              <option value="">Todos os estados</option>
+              <option value="novo">Novo</option>
+              <option value="lido">Lido</option>
+              <option value="respondido">Respondido</option>
+              <option value="arquivado">Arquivado</option>
+            </select>
+            <input type="search" id="searchMensagens" class="admin-input" placeholder="Pesquisar nome/email..." />
+            <button type="button" id="refreshMensagens" class="btn btn-outline btn-sm">↻</button>
+            <button type="button" id="exportMensagens" class="btn btn-primary btn-sm">Exportar CSV</button>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="tableMensagens">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Assunto</th>
+                <th>Mensagem</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p id="emptyMensagens" class="admin-empty" hidden>Sem mensagens.</p>
+          <p id="loadingMensagens" class="admin-empty">A carregar...</p>
+        </div>
+
+        <div class="admin-pagination">
+          <button type="button" id="prevMensagens" class="btn btn-outline btn-sm" disabled>← Anterior</button>
+          <span id="pageMensagens" class="muted">Página 1</span>
+          <button type="button" id="nextMensagens" class="btn btn-outline btn-sm" disabled>Próxima →</button>
+        </div>
+      </section>
+
+      <!-- Newsletter -->
+      <section id="panelNewsletter" class="admin-panel" role="tabpanel" hidden>
+        <div class="admin-toolbar">
+          <h2>Subscritores newsletter</h2>
+          <div class="admin-toolbar-actions">
+            <input type="search" id="searchNewsletter" class="admin-input" placeholder="Pesquisar email..." />
+            <button type="button" id="refreshNewsletter" class="btn btn-outline btn-sm">↻</button>
+            <button type="button" id="exportNewsletter" class="btn btn-primary btn-sm">Exportar CSV</button>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="tableNewsletter">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p id="emptyNewsletter" class="admin-empty" hidden>Sem subscritores.</p>
+          <p id="loadingNewsletter" class="admin-empty">A carregar...</p>
+        </div>
+
+        <div class="admin-pagination">
+          <button type="button" id="prevNewsletter" class="btn btn-outline btn-sm" disabled>← Anterior</button>
+          <span id="pageNewsletter" class="muted">Página 1</span>
+          <button type="button" id="nextNewsletter" class="btn btn-outline btn-sm" disabled>Próxima →</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal de detalhe da mensagem -->
+    <div id="messageModal" class="admin-modal" hidden role="dialog" aria-modal="true" aria-labelledby="messageModalTitle">
+      <div class="admin-modal-backdrop" data-close></div>
+      <div class="admin-modal-card">
+        <button type="button" class="admin-modal-close" data-close aria-label="Fechar">×</button>
+        <h3 id="messageModalTitle">Detalhe da mensagem</h3>
+        <dl id="messageModalBody"></dl>
+        <div class="admin-modal-actions">
+          <label class="field">
+            <span class="label-text">Estado</span>
+            <select id="modalStatus" class="admin-select">
+              <option value="novo">Novo</option>
+              <option value="lido">Lido</option>
+              <option value="respondido">Respondido</option>
+              <option value="arquivado">Arquivado</option>
+            </select>
+          </label>
+          <a id="modalReplyEmail" class="btn btn-outline btn-sm" target="_blank" rel="noopener">Responder por email</a>
+          <a id="modalReplyWhatsapp" class="btn btn-outline btn-sm" target="_blank" rel="noopener" hidden>WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/admin.js" defer></script>
+</body>
+</html>

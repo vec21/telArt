@@ -1,12 +1,13 @@
 # SPEC — Spec-Driven Development (SDD)
 
 > **Projecto:** adrianaTelArt — Integração de formulário com Supabase + Deploy Vercel
-> **Versão:** 1.2.0
-> **Estado:** Em execução
+> **Versão:** 2.0.0
+> **Estado:** Em execução (Fase 2.0)
 > **Owner:** Veríssimo
 > **Última actualização:** 2026-04-29
 
 ## Changelog
+- **2.0.0** — Major: introduz dashboard administrativo (`admin.html`) com Supabase Auth (email+password). Adiciona gestão de Mensagens e Newsletter. Sub-fases planeadas: 2.1 Produtos+Catálogo dinâmico, 2.2 Encomendas, 2.3 Settings, 2.4 Estatísticas. Mecanismo admin: pragmático (qualquer authenticated user). Storage Supabase activado (Fase 2.1).
 - **1.2.0** — Adicionado segundo formulário (newsletter em `index.html`). Nova tabela `newsletter`. Scripts Supabase incluídos também em `index.html`.
 - **1.1.0** — Pós-análise (Fase §4). Stack real é HTML+CSS+JS vanilla (não Next.js). Schema estendido com `assunto` e `telefone`. Estratégia de envs adaptada a site estático. MCPs Supabase e Vercel obrigatórios.
 - **1.0.0** — Versão inicial.
@@ -21,7 +22,9 @@
 
 ## 1. Objectivo
 
-Integrar o formulário existente (`#contactForm` em `contacto.html`) com Supabase e publicar na Vercel com persistência funcional.
+**v1.x (entregue):** Integrar formulários `#contactForm` e `#newsletterForm` com Supabase + deploy Vercel.
+
+**v2.x (em curso):** Construir dashboard administrativo (`admin.html`) protegido por Supabase Auth, permitindo gerir todo o negócio (mensagens, newsletter, catálogo de produtos, encomendas, configurações do site, estatísticas).
 
 ### 1.1. Definition of Done
 
@@ -37,22 +40,55 @@ Integrar o formulário existente (`#contactForm` em `contacto.html`) com Supabas
 | AC8 | Deploy Vercel público (200) | `mcp_vercel_deploy_to_vercel` |
 | AC9 | Submit em produção persiste | `mcp_supabase_execute_sql` confirma linha |
 
+### 1.2. Definition of Done — Fase 2.0 (admin shell + mensagens + newsletter)
+
+| # | Critério | Verificação |
+|---|----------|-------------|
+| AC10 | `admin.html` exige login | Acesso sem sessão redirecciona para `/admin` login form |
+| AC11 | Login email+password funciona | Sessão persiste em `localStorage` (Supabase) |
+| AC12 | Logout limpa sessão | Botão logout devolve ao login form |
+| AC13 | Lista mensagens de `formulario` | Tabela renderizada com paginação |
+| AC14 | Marcar status (novo/lido/respondido/arquivado) | UPDATE persiste no Supabase |
+| AC15 | Lista subscritores `newsletter` | Tabela renderizada |
+| AC16 | Export CSV (mensagens e newsletter) | Download de `.csv` válido |
+| AC17 | RLS só permite leitura/UPDATE a authenticated | `anon` continua bloqueado de SELECT |
+
 ---
 
 ## 2. Escopo
 
-### 2.1. IN SCOPE
+### 2.1. IN SCOPE (v1.x — entregue)
 - Provisionar Supabase + tabelas `formulario` e `newsletter` via **MCP Supabase**
 - Cliente Supabase via CDN em `contacto.html` e `index.html`
-- Substituir `setTimeout` fake em `js/app.js` (`initContactForm` e `initNewsletterForm`) por `INSERT` real
-- Manter UX existente (validação, status, reset)
+- Substituir `setTimeout` fake em `js/app.js` por `INSERT` real
+- Manter UX existente
 - Deploy estático Vercel via **MCP Vercel**
 
-### 2.2. OUT OF SCOPE
-- Migrar para Next.js / qualquer framework com build
-- Auth, painel admin, emails, ORM, i18n, testes, uploads
-- Refactor visual / CSS / layout
-- Alterações fora de `contacto.html`, `js/app.js`, `js/supabase*.js`, `.gitignore`
+### 2.1.bis IN SCOPE — Fase 2.0 (em curso)
+- Activar Supabase Auth (email+password, sem email confirm)
+- Adicionar coluna `status` em `formulario` (`novo|lido|respondido|arquivado`)
+- Policies RLS de SELECT/UPDATE em `formulario` e SELECT em `newsletter` para `authenticated`
+- Criar `admin.html` com login + dashboard shell (tabs: Mensagens, Newsletter, futuro: Produtos/Encomendas/Settings/Stats)
+- Criar `js/admin.js` com: gestão de sessão, listagem com paginação, filtros, update de status, export CSV
+- Não alterar formulários públicos existentes
+
+### 2.1.ter IN SCOPE — Fases futuras (planeadas, não implementadas ainda)
+- **2.1** Produtos: tabela `produtos` + Storage para imagens + `catalogo.html` dinâmico
+- **2.2** Encomendas: `encomendas` + `encomenda_itens`
+- **2.3** Settings: tabela `settings` (key/value JSONB) editando WhatsApp/email/banner
+- **2.4** Estatísticas: dashboard com gráficos via Chart.js CDN
+
+### 2.2. OUT OF SCOPE (v2.x)
+- Migrar para framework com build (Next/Vite/etc.)
+- OAuth (Google/GitHub) — só email+password
+- Magic links
+- Multi-tenancy / roles granulares (RBAC) — mecanismo é "qualquer authenticated"
+- Reset password por email (futuro)
+- 2FA
+- Notificações push / email automático de novas mensagens
+- i18n / SEO avançado
+- Testes automatizados
+- Refactor visual do site público
 
 ### 2.3. Ferramentas obrigatórias do agente
 - **MCP Supabase** (`mcp_supabase_*`): schema, RLS, queries, advisors
@@ -102,6 +138,7 @@ Campos:
 ### 5.2. Schema das tabelas
 
 ```sql
+-- v1.x
 create table public.formulario (
   id          uuid primary key default gen_random_uuid(),
   nome        text not null,
@@ -117,7 +154,27 @@ create table public.newsletter (
   email       text not null unique,
   created_at  timestamptz not null default now()
 );
+
+-- v2.0 add
+alter table public.formulario add column status text not null default 'novo'
+  check (status in ('novo','lido','respondido','arquivado'));
 ```
+
+### 5.3. RLS — v2.0
+
+```sql
+-- formulario: anon insert (mantido), authenticated select/update
+create policy "auth select formulario"  on public.formulario for select to authenticated using (true);
+create policy "auth update formulario"  on public.formulario for update to authenticated using (true) with check (true);
+
+-- newsletter: anon insert (mantido), authenticated select
+create policy "auth select newsletter"  on public.newsletter for select to authenticated using (true);
+
+grant select, update on public.formulario to authenticated;
+grant select on public.newsletter to authenticated;
+```
+
+> Sem policy de DELETE — admin apenas arquiva (status='arquivado').
 
 ### 5.3. RLS
 

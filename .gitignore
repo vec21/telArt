@@ -5,3 +5,4 @@ js/supabase-config.js
 .DS_Store
 Thumbs.db
 *.log
+.vercel
