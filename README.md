@@ -1,9 +1,17 @@
-# adrianaTelArt
+<p align="center">
+  <img src="assets/logo.png" alt="Tel'Art" width="120" />
+</p>
 
-Site institucional **Tel'Art** (tapeçaria e decoração de Adriana) com formulários ligados a Supabase e dashboard administrativo protegido por autenticação.
+<h1 align="center">Tel'Art</h1>
 
-🌍 **Produção:** https://adriana-telart.vercel.app
-🔐 **Admin:** https://adriana-telart.vercel.app/admin.html
+<p align="center">
+  Site institucional <strong>Tel'Art</strong> (kits femininos, buquês e presentes personalizados de Adriana) com formulários ligados a Supabase e dashboard administrativo protegido por autenticação.
+</p>
+
+<p align="center">
+  🌍 <a href="https://adriana-telart.vercel.app">adriana-telart.vercel.app</a> &nbsp;·&nbsp;
+  🔐 <a href="https://adriana-telart.vercel.app/admin.html">/admin.html</a>
+</p>
 
 ---
 

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Página não encontrada — Tel'Art</title>
+  <meta name="robots" content="noindex,follow" />
+  <meta name="description" content="A página que procuras não existe ou foi movida." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="theme-color" content="#F45B5B">
+  <style>
+    .nf-wrap{
+      min-height:calc(100vh - 80px);
+      display:grid; place-items:center;
+      padding:3rem 1.25rem;
+      background:linear-gradient(135deg,#fff7f2,#fdeae1);
+    }
+    .nf-card{
+      max-width:560px; width:100%;
+      background:#fff;
+      border-radius:16px;
+      padding:2.5rem 2rem;
+      text-align:center;
+      box-shadow:0 20px 50px rgba(244,91,91,.12);
+    }
+    .nf-logo{ width:84px; height:84px; margin:0 auto 1rem; display:block; }
+    .nf-code{
+      font-size:5rem; font-weight:800; line-height:1;
+      background:linear-gradient(135deg,#F45B5B,#E7A86A);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      margin:0;
+    }
+    .nf-title{ margin:.25rem 0 .75rem; font-size:1.4rem; color:#351b1b; }
+    .nf-desc{ color:#7a5c5c; margin:0 0 1.75rem; }
+    .nf-actions{ display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; }
+    @media (max-width:480px){
+      .nf-code{ font-size:4rem; }
+      .nf-card{ padding:2rem 1.25rem; }
+    }
+  </style>
+</head>
+<body class="theme-light">
+  <main class="nf-wrap">
+    <div class="nf-card">
+      <img src="assets/logo.png" alt="Tel'Art" class="nf-logo" />
+      <p class="nf-code">404</p>
+      <h1 class="nf-title">Página não encontrada</h1>
+      <p class="nf-desc">A página que procuras não existe, foi movida ou o link está partido.</p>
+      <div class="nf-actions">
+        <a class="btn btn-primary" href="/">← Voltar à home</a>
+        <a class="btn btn-ghost" href="/catalogo.html">Ver catálogo</a>
+        <a class="btn btn-ghost" href="/contacto.html">Contactar</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
