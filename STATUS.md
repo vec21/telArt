@@ -1,147 +1,95 @@
 # STATUS — adrianaTelArt
 
 > Última actualização: 2026-04-29
-> SPEC: [SPEC.md](SPEC.md) v1.2.0
+> SPEC: [SPEC.md](SPEC.md) v2.1.0 (Fase 2.1 pausada — produção em v2.0.0)
 
 ---
 
-## ✅ Feito
+## ✅ Feito (v1.0.0 → v2.0.0 em produção)
 
-### Fase 1 — Setup local
-- `git init` + `remote add origin` + `fetch` + `checkout -t origin/master`
-- Stack confirmada: HTML/CSS/JS vanilla (sem build)
-- Servidor local: `npx serve .` em `localhost:3000`
+### v1.x — Formulários públicos
+- `git init` + clone de `vec21/telArt` (branch `master`)
+- Stack: HTML/CSS/JS vanilla (sem build)
+- Servidor local: `npx serve .`
+- Tabela `public.formulario` (id, nome, email, telefone, assunto, mensagem, status, created_at)
+- Tabela `public.newsletter` (id, email unique, created_at)
+- RLS: `INSERT-only` para `anon`
+- [js/supabase-config.js](js/supabase-config.js) gitignored, `.example.js` comitado
+- [js/supabase.js](js/supabase.js), [js/app.js](js/app.js) — `INSERT` real (substitui `setTimeout` fake)
+- Tratamento `23505` para newsletter duplicada
+- Deploy Vercel: https://adriana-telart.vercel.app
+- Linked a `vec21/telArt` (auto-deploy em push)
 
-### Fase 2 — Análise
-- Form de contacto identificado: `#contactForm` em [contacto.html](contacto.html)
-- Form de newsletter identificado: `#newsletterForm` em [index.html](index.html)
-- Handlers em [js/app.js](js/app.js) (`initContactForm`, `initNewsletterForm`) — antes faziam `setTimeout` fake
+### v2.0.0 — Admin Dashboard (Fase 2.0) ✅
+- Supabase Auth email+password activado (sem confirmação de email)
+- Coluna `status` em `formulario` (`novo|lido|respondido|arquivado`)
+- RLS authenticated SELECT/UPDATE em `formulario` + SELECT em `newsletter`
+- [admin.html](admin.html) — login + dashboard shell (6 tabs; 4 disabled em "Em breve")
+- [css/admin.css](css/admin.css) — tema próprio + responsivo
+- [js/admin.js](js/admin.js) — sessão, paginação, filtros, search, update status, export CSV
+- Modal de detalhe da mensagem com `mailto:` + `wa.me/`
+- Validação E2E local + produção
+- Deploy production em https://adriana-telart.vercel.app/admin.html
 
-### Fase 3 — Supabase
-- Projecto dedicado: `ijmrqkwyrrumcdjcvqme.supabase.co`
-- Tabela `public.formulario`: id, nome, email, telefone, assunto, mensagem, created_at
-- Tabela `public.newsletter`: id, email (unique), created_at
-- RLS activo em ambas, policy `INSERT-only` para `anon`
-- `GRANT INSERT` explícito a `anon` e `authenticated`
-
-### Fase 4 — Integração
-- [js/supabase-config.js](js/supabase-config.js) — credenciais (gitignored)
-- [js/supabase-config.example.js](js/supabase-config.example.js) — template comitado
-- [js/supabase.js](js/supabase.js) — inicializa `window.supabaseClient`
-- Scripts adicionados a [contacto.html](contacto.html) e [index.html](index.html)
-- `initContactForm` e `initNewsletterForm` agora fazem `INSERT` real
-- Tratamento de erro `23505` (email duplicado na newsletter)
-
-### Fase 5 — UX
-- Validação client-side mantida (sem alterações ao layout)
-- Mensagens de erro genéricas (sem expor stack)
-- `disabled` no botão durante o `await`
-- Reset apenas em sucesso
-
-### Fase 6 — Segurança
-- `js/supabase-config.js` em [.gitignore](.gitignore)
-- Apenas anon key no cliente; service_role nunca usada
-- RLS rigorosa: só `INSERT`, sem `SELECT/UPDATE/DELETE` para `anon`
-- Sem logs de payload em produção
-
-### Fase 7 — Deploy
-- Projecto Vercel: `vec21s-projects/adriana-telart`
-- URL: https://adriana-telart.vercel.app
-- Inspect: https://vercel.com/vec21s-projects/adriana-telart
-- Linked ao GitHub `vec21/telArt` (deploys automáticos em push)
-
-### Validação E2E
-- Local: form contacto + newsletter persistem ✅
-- Produção: form contacto + newsletter persistem ✅
-- Duplicado newsletter: tratado com mensagem amigável ✅
+### Validação produção (último commit `2bf80e0`)
+| AC | Estado |
+|---|---|
+| AC1–AC9 (v1.x) | ✅ |
+| AC10–AC17 (v2.0) | ✅ |
 
 ### Estado Supabase (linhas reais)
 | Tabela | Linhas |
 |---|---|
-| `formulario` | 3 |
+| `formulario` | 3 (1 lido, 2 novo) |
 | `newsletter` | 2 |
+| `produtos` | — (não criada ainda) |
 
 ---
 
-## 🟡 Falta (pequenas validações pós-deploy)
+## 🟡 Em pausa — Fase 2.1 (Produtos + Storage + Catálogo dinâmico)
 
-- [ ] Push do branch `master` para `origin` (commits locais ainda não publicados)
-- [ ] Limpar dados de teste das tabelas antes do go-live (3 + 2 linhas dummy)
-- [ ] Verificar que `js/supabase-config.js` em produção tem as credenciais correctas (já confirmado por AC9 a passar)
-- [ ] Configurar domínio custom na Vercel (se aplicável)
+> SPEC bumped a v2.1.0 (escopo, schema, RLS e DoD AC18-AC25 escritos), **mas implementação parada antes de criar tabela**.
+
+**Bloqueador:** ferramentas MCP `apply_migration` e `execute_sql` desactivadas pelo utilizador. Necessário reactivar antes de continuar.
+
+**Trabalho já feito nesta fase:**
+- [SPEC.md §1.3, §2.1.ter, §5.4–5.6](SPEC.md) — escopo + schema `produtos` + bucket Storage definidos
+- Categorias acordadas: `tapecaria`, `decoracao`, `tradicional`, `arte`, `outro`
+
+**Falta executar (ordem):**
+1. Reactivar `mcp_supabase_apply_migration`
+2. Migration: tabela `produtos` + RLS + trigger `updated_at`
+3. Bucket Storage `produtos` (public read; auth write) + policies em `storage.objects`
+4. Tab Produtos no [admin.html](admin.html): list/filter/search, criar, editar, eliminar, upload imagem, toggle `ativo`/`destaque`
+5. Refactor [catalogo.html](catalogo.html) → fetch dinâmico de `produtos` ordenados por `ordem`
+6. Test local + deploy Vercel
+7. Validar AC18–AC25
+
+> Prompt de retoma pronto em [NEXT-SESSION.md](NEXT-SESSION.md).
 
 ---
 
 ## 🔴 Out of Scope — requer Change Control ([SPEC §12](SPEC.md#12-change-control))
 
-Itens **não** implementados por estarem fora do contrato actual:
+Fases planeadas mas sem escopo detalhado:
+- **2.2** Encomendas (`encomendas` + `encomenda_itens`)
+- **2.3** Settings (key/value JSONB para WhatsApp/email/banner)
+- **2.4** Estatísticas (Chart.js CDN)
 
-- **Dashboard admin** ← pedido em conversa, requer bump para v2.0.0 (ver proposta abaixo)
-- Autenticação de utilizadores
-- Notificações por email ao receber submissão
-- Rate limiting / anti-spam (captcha, honeypot)
-- Painel de gestão de leads
-- Export CSV das submissões
-- Dashboard de métricas
-- Internacionalização
+Itens explicitamente fora do contrato actual:
+- OAuth (Google/GitHub), magic links, 2FA, reset password
+- RBAC granular (mecanismo é "qualquer authenticated")
+- Rate limiting / captcha / honeypot
+- Email automático em nova mensagem
+- Push notifications
+- i18n / SEO avançado
 - Testes automatizados (E2E / unit)
+- Migração para framework com build
 
 ---
 
-## 📋 Proposta de Change Control para Dashboard Admin
+## 🧹 Pendências menores
 
-> Esta secção é **proposta**, não implementação. Decisão fica contigo.
-
-### Bump sugerido
-SPEC `v1.2.0` → `v2.0.0` (mudança major: adiciona auth + UI nova).
-
-### Novo IN SCOPE proposto
-- Página `admin.html` protegida por Supabase Auth (email+password ou magic link)
-- Listagem de submissões (`formulario` e `newsletter`) com:
-  - Tabela paginada
-  - Filtros (data, assunto)
-  - Marcar como "lido"/"respondido" (nova coluna `status`)
-- Logout
-- RLS: nova policy de `SELECT` apenas para utilizadores autenticados com role admin
-
-### Schema adicional necessário
-```sql
--- Nova coluna em formulario
-alter table public.formulario add column status text not null default 'novo'
-  check (status in ('novo','lido','respondido','arquivado'));
-
--- RLS: SELECT apenas para autenticados
-create policy "admin select formulario"
-  on public.formulario for select
-  to authenticated using (true);
-
--- Mesma lógica para newsletter (opcional)
-```
-
-### Novos ficheiros
-- `admin.html` — página de login + dashboard
-- `js/admin.js` — lógica de listagem
-- `js/auth.js` — login/logout/session check
-
-### Riscos novos
-- Como definir quem é "admin"? Opções:
-  - (a) Tabela `admins` com emails autorizados (simples)
-  - (b) Custom claim no JWT (mais complexo)
-  - (c) Apenas qualquer authenticated user que tu crieis manualmente no Supabase (pragmático)
-
-### Estimativa de fases
-1. SPEC v2.0.0 escrito e aprovado
-2. Auth Supabase configurada (email + password)
-3. `admin.html` + login funcional
-4. Listagem read-only de `formulario`
-5. Filtros + status update
-6. Listagem `newsletter`
-7. Deploy + teste
-
-### Decisão necessária para avançar
-1. Aprovas o bump para v2.0.0?
-2. Qual mecanismo de "admin"? (a/b/c acima)
-3. Auth: email+password, magic link, ou OAuth (Google)?
-4. Listar `newsletter` no dashboard ou só `formulario`?
-
-Responde-me com as respostas a essas 4 perguntas e eu actualizo o SPEC e implemento.
+- [ ] Limpar dados de teste das tabelas antes de go-live (3 mensagens + 2 newsletters dummy)
+- [ ] Configurar domínio custom na Vercel (se aplicável)
+- [ ] Decidir se quer "Confirm email" activo no Supabase Auth (actualmente desactivado)

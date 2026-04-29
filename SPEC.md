@@ -1,12 +1,13 @@
 # SPEC — Spec-Driven Development (SDD)
 
 > **Projecto:** adrianaTelArt — Integração de formulário com Supabase + Deploy Vercel
-> **Versão:** 2.0.0
-> **Estado:** Em execução (Fase 2.0)
+> **Versão:** 2.1.0
+> **Estado:** Fase 2.1 pausada (DB ainda não criada). v2.0.0 em produção.
 > **Owner:** Veríssimo
 > **Última actualização:** 2026-04-29
 
 ## Changelog
+- **2.1.0** — Fase 2.1: catálogo dinâmico. Tabela `produtos` + Supabase Storage bucket `produtos` (public read, authenticated write). Tab Produtos no admin com CRUD + upload de imagem. `catalogo.html` passa a renderizar dinamicamente a partir do Supabase. Categorias fixas (`tapecaria`, `decoracao`, `tradicional`, `arte`, `outro`).
 - **2.0.0** — Major: introduz dashboard administrativo (`admin.html`) com Supabase Auth (email+password). Adiciona gestão de Mensagens e Newsletter. Sub-fases planeadas: 2.1 Produtos+Catálogo dinâmico, 2.2 Encomendas, 2.3 Settings, 2.4 Estatísticas. Mecanismo admin: pragmático (qualquer authenticated user). Storage Supabase activado (Fase 2.1).
 - **1.2.0** — Adicionado segundo formulário (newsletter em `index.html`). Nova tabela `newsletter`. Scripts Supabase incluídos também em `index.html`.
 - **1.1.0** — Pós-análise (Fase §4). Stack real é HTML+CSS+JS vanilla (não Next.js). Schema estendido com `assunto` e `telefone`. Estratégia de envs adaptada a site estático. MCPs Supabase e Vercel obrigatórios.
@@ -53,6 +54,19 @@
 | AC16 | Export CSV (mensagens e newsletter) | Download de `.csv` válido |
 | AC17 | RLS só permite leitura/UPDATE a authenticated | `anon` continua bloqueado de SELECT |
 
+### 1.3. Definition of Done — Fase 2.1 (produtos + storage + catálogo dinâmico)
+
+| # | Critério | Verificação |
+|---|----------|-------------|
+| AC18 | Tabela `produtos` com schema [§5.4](#54-schema-produtos-v21) criada | `mcp_supabase_list_tables` |
+| AC19 | Bucket Storage `produtos` público para leitura | `select * from storage.buckets where id='produtos'` |
+| AC20 | Tab Produtos no admin lista, cria, edita, elimina | UI funcional + linhas persistidas |
+| AC21 | Upload de imagem funciona | Ficheiro em `storage/produtos/...` + `imagem_url` gravado |
+| AC22 | Toggle `ativo`/`destaque` persiste | UPDATE no Supabase |
+| AC23 | `catalogo.html` renderiza produtos `ativo=true` ordenados por `ordem` | Filtro por categoria operacional |
+| AC24 | RLS produtos: anon SELECT (`ativo=true`), authenticated CRUD | Policies aplicadas |
+| AC25 | Storage RLS: anon read bucket, authenticated upload/delete | Policies aplicadas |
+
 ---
 
 ## 2. Escopo
@@ -72,8 +86,14 @@
 - Criar `js/admin.js` com: gestão de sessão, listagem com paginação, filtros, update de status, export CSV
 - Não alterar formulários públicos existentes
 
-### 2.1.ter IN SCOPE — Fases futuras (planeadas, não implementadas ainda)
-- **2.1** Produtos: tabela `produtos` + Storage para imagens + `catalogo.html` dinâmico
+### 2.1.ter IN SCOPE — Fase 2.1 (em curso)
+- Tabela `produtos` + RLS (anon SELECT só `ativo=true`; authenticated CRUD completo)
+- Bucket Storage `produtos` (public read; authenticated insert/update/delete)
+- Tab Produtos no admin: list (com filtro categoria/ativo), criar, editar, eliminar, toggle `ativo`/`destaque`, upload de imagem (substitui imagem anterior se houver)
+- `catalogo.html` dinâmico: fetch produtos `ativo=true` ordenados por `ordem`, com filtro por categoria; manter visual existente (cards reutilizam classes actuais)
+- Categorias fixas no código: `tapecaria`, `decoracao`, `tradicional`, `arte`, `outro`
+
+### 2.1.quater IN SCOPE — Fases futuras (planeadas)
 - **2.2** Encomendas: `encomendas` + `encomenda_itens`
 - **2.3** Settings: tabela `settings` (key/value JSONB) editando WhatsApp/email/banner
 - **2.4** Estatísticas: dashboard com gráficos via Chart.js CDN
@@ -159,6 +179,55 @@ create table public.newsletter (
 alter table public.formulario add column status text not null default 'novo'
   check (status in ('novo','lido','respondido','arquivado'));
 ```
+
+### 5.4. Schema produtos (v2.1)
+
+```sql
+create table public.produtos (
+  id           uuid primary key default gen_random_uuid(),
+  nome         text not null,
+  slug         text not null unique,
+  descricao    text,
+  preco        numeric(12,2),                  -- null = "Sob consulta"
+  categoria    text not null check (categoria in ('tapecaria','decoracao','tradicional','arte','outro')),
+  imagem_url   text,                            -- public URL do bucket
+  imagem_path  text,                            -- path interno (storage key) para apagar/substituir
+  destaque     boolean not null default false,
+  ativo        boolean not null default true,
+  ordem        int not null default 0,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+create index produtos_categoria_idx on public.produtos (categoria);
+create index produtos_ativo_ordem_idx on public.produtos (ativo, ordem);
+```
+
+### 5.5. RLS produtos (v2.1)
+
+```sql
+alter table public.produtos enable row level security;
+
+-- público lê só produtos activos
+create policy "anon select produtos ativos" on public.produtos
+  for select to anon using (ativo = true);
+
+-- authenticated CRUD completo
+create policy "auth select produtos" on public.produtos for select to authenticated using (true);
+create policy "auth insert produtos" on public.produtos for insert to authenticated with check (true);
+create policy "auth update produtos" on public.produtos for update to authenticated using (true) with check (true);
+create policy "auth delete produtos" on public.produtos for delete to authenticated using (true);
+
+grant select on public.produtos to anon;
+grant select, insert, update, delete on public.produtos to authenticated;
+```
+
+### 5.6. Storage bucket produtos (v2.1)
+
+- Bucket `produtos`, public = true (URLs públicas para leitura).
+- Policies em `storage.objects`:
+  - `anon select produtos bucket` — leitura pública.
+  - `auth insert produtos bucket`, `auth update produtos bucket`, `auth delete produtos bucket` — gestão pelo admin.
+- Path padrão: `produtos/<uuid>-<slug>.<ext>`.
 
 ### 5.3. RLS — v2.0
 
