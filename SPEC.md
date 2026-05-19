@@ -401,5 +401,13 @@ HTML/CSS/JS vanilla. Form `#contactForm` em `contacto.html`. Handler em `js/app.
 - Branch padrão é `master`, não `main`.
 
 ### 13.5. URLs
-- Vercel: _(pendente)_
-- Supabase ref: _(pendente)_
+- Vercel: https://adriana-telart.vercel.app
+- Supabase ref: `ijmrqkwyrrumcdjcvqme`
+
+### 13.6. Sessão 2026-05-19 (encerramento)
+- **v2.1.3** — Cart UX: drawer lateral + qty controls + toast (`f2a5d16`)
+- **v2.1.4** — Catálogo redesign artesanal: Playfair Display, paleta papel/tinta, cards offset shadow, chips editoriais, badge etiqueta — `css/catalogo.css` (`5391ff5`)
+- **v2.1.5** — Tema artesanal global em index/sobre/contacto/404 via `css/theme-artisan.css` (`64730d1`)
+- **v2.1.6** — Proforma PDF imprimível: numeração sequencial `PRO {ANO}/{0000}` em `localStorage`, prompt cliente, layout boutique, sem deps novas (`8871f34`)
+- Validado em produção via chrome-devtools MCP.
+- Próximas opções discutidas: formulário in-page para dados cliente, campo NIF, logo na proforma.
