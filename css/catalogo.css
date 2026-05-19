@@ -1,0 +1,286 @@
+/* css/catalogo.css — identidade artesanal boutique (v2.1.4)
+ * Aplica-se apenas à página catalogo.html, override em cima de style.css.
+ * Tema: serif display + texturas papel + cards com offset shadow tipo print.
+ */
+
+:root{
+  --serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --ink: #2a1a1a;
+  --paper: #fbf4ec;
+  --paper-2: #f4e9dc;
+  --rose: #c94b6b;        /* coral rosado mais profundo, menos genérico */
+  --rose-soft: #f3b9be;
+  --leaf: #6b8e5a;        /* verde-folha para acentos artesanais */
+  --cream: #fff8ed;
+  --line: rgba(42,26,26,.08);
+}
+
+/* ===== Tipografia ===== */
+body{ background: var(--paper); color: var(--ink); }
+
+h1, h2, h3, .serif{
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* ===== Header / brand ===== */
+.site-header{ background: rgba(251, 244, 236, .92); border-bottom-color: var(--line); }
+.brand-name{ font-family: var(--serif); font-size: 1.35rem; font-weight: 700; }
+.brand-tag{ font-style: italic; color: #7a5c5c; font-size: .8rem; }
+.nav-list a{ color: var(--ink); opacity: .75; font-size: .92rem; }
+.nav-list a:hover, .nav-list a.active{ opacity: 1; background: transparent; color: var(--rose); }
+.nav-list a.active{ position: relative; }
+.nav-list a.active::after{
+  content: ""; position: absolute; left: .7rem; right: .7rem; bottom: .15rem; height: 2px;
+  background: var(--rose); border-radius: 2px;
+}
+
+/* ===== Hero ===== */
+.page-header-compact{
+  background: linear-gradient(180deg, var(--cream) 0%, var(--paper) 100%);
+  padding: 3rem 0 2rem;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.page-header-compact::before{
+  /* textura papel pontilhada subtil */
+  content: ""; position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(42,26,26,.06) 1px, transparent 0);
+  background-size: 14px 14px; opacity: .5; pointer-events: none;
+}
+.page-header-compact .container{ position: relative; z-index: 1; }
+.page-header-compact .eyebrow{
+  font-family: 'Inter', sans-serif; font-size: .72rem; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--rose); font-weight: 700; margin-bottom: .6rem;
+  display: flex; align-items: center; gap: .6rem;
+}
+.page-header-compact .eyebrow::before,
+.page-header-compact .eyebrow::after{
+  content: ""; height: 1px; background: var(--rose); opacity: .5; flex: 0 0 24px;
+}
+.page-header-compact h1{
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  line-height: 1.05; margin: 0 0 .6rem; color: var(--ink); font-weight: 600;
+  max-width: 18ch;
+}
+.page-header-compact h1 em{ font-style: italic; color: var(--rose); font-weight: 500; }
+.page-header-compact p{
+  font-size: 1rem; color: #5a4242; max-width: 48ch; margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ===== Filtros (chips quentes) ===== */
+.catalog-filters{ background: transparent; padding: 1.5rem 0 .5rem; }
+.filter-buttons{ display: flex; flex-wrap: wrap; gap: .45rem; }
+.filter-btn{
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: .5rem 1rem;
+  border-radius: 999px;
+  font-size: .85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .18s;
+  font-family: 'Inter', sans-serif;
+}
+.filter-btn:hover{ border-color: var(--rose); color: var(--rose); }
+.filter-btn.active{
+  background: var(--ink); color: var(--cream); border-color: var(--ink);
+}
+
+/* ===== Catálogo grid ===== */
+.section-tight{ padding: .5rem 0 2.5rem; }
+.catalog-count{
+  font-family: var(--serif); font-style: italic; color: #7a5c5c;
+  font-size: .95rem; margin: 1rem 0 .5rem;
+}
+.products-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.4rem 1.2rem;
+  margin-top: .5rem;
+}
+
+/* ===== Card (estilo print/papel artesanal) ===== */
+.product-card{
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 4px;                      /* menos arredondado, mais "print" */
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow:
+    0 1px 0 rgba(42,26,26,.04),
+    6px 6px 0 rgba(42,26,26,.05);          /* offset shadow, sensação de papel sobreposto */
+  transition: transform .25s ease, box-shadow .25s ease;
+  position: relative;
+}
+.product-card:hover{
+  transform: translate(-2px, -2px);
+  box-shadow:
+    0 1px 0 rgba(42,26,26,.04),
+    10px 10px 0 rgba(42,26,26,.08);
+}
+.product-media{ position: relative; overflow: hidden; background: var(--paper-2); aspect-ratio: 1 / 1; }
+.product-media img{
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .55s ease, filter .35s ease;
+  filter: saturate(.95);
+}
+.product-card:hover .product-media img{ transform: scale(1.04); filter: saturate(1.05); }
+
+/* Badge "Destaque" tipo etiqueta */
+.product-type{
+  position: absolute; top: .9rem; left: -4px;
+  background: var(--rose);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding: .35rem .75rem .35rem 1rem;
+  z-index: 2;
+}
+.product-type::before{
+  /* recorte tipo fita à esquerda */
+  content: ""; position: absolute; left: 0; top: 100%;
+  border-width: 0 4px 4px 0;
+  border-style: solid; border-color: transparent #8a2b43 transparent transparent;
+}
+
+.product-body{
+  padding: 1rem 1rem 1.1rem;
+  flex: 1; display: flex; flex-direction: column;
+  background: var(--cream);
+}
+.product-name{
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 .25rem;
+  color: var(--ink);
+}
+.product-desc{
+  font-family: 'Inter', sans-serif;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #9a7c7c;
+  margin: 0 0 .9rem;
+  font-weight: 500;
+}
+.product-footer{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .5rem;
+  padding-top: .7rem;
+  border-top: 1px dashed var(--line);
+}
+.price{
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Botão Adicionar */
+.product-footer .btn,
+.product-footer .btn-outline{
+  background: transparent;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  border-radius: 0;
+  padding: .45rem .85rem;
+  font-family: 'Inter', sans-serif;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  transition: background .18s, color .18s, transform .12s;
+}
+.product-footer .btn:hover,
+.product-footer .btn-outline:hover{
+  background: var(--ink); color: var(--cream);
+}
+.product-footer .btn:active{ transform: scale(.97); }
+.product-footer .btn[data-added="true"]{
+  background: var(--leaf); color: #fff; border-color: var(--leaf);
+}
+
+/* ===== Cart trigger header ===== */
+.cart-trigger{
+  border-color: var(--ink);
+  color: var(--ink);
+  background: transparent;
+}
+.cart-trigger:hover{ background: var(--ink); color: var(--cream); }
+.cart-trigger:hover .cart-badge{ background: var(--rose); color: #fff; }
+.cart-trigger .cart-badge{ background: var(--rose); }
+
+/* ===== Drawer ===== */
+.cart-drawer{ background: var(--cream); }
+.cart-drawer-head h2{ font-family: var(--serif); font-size: 1.2rem; }
+.cart-drawer-foot{ background: var(--paper); border-top-color: var(--line); }
+.cart-foot-row .cart-total-val,
+#cartDrawerTotal{ font-family: var(--serif); color: var(--ink); }
+.cart-item-name{ font-family: var(--serif); font-weight: 600; font-size: 1rem; }
+.cart-item-cat{ text-transform: uppercase; letter-spacing: .12em; font-size: .68rem; }
+.cart-item-price{ font-family: var(--serif); color: var(--ink); font-size: 1rem; }
+.cart-drawer-foot .btn-accent{
+  background: var(--ink); color: var(--cream); border-radius: 0;
+  font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; padding: .85rem 1rem;
+}
+.cart-drawer-foot .btn-accent:hover{ background: var(--rose); }
+.cart-drawer-foot .btn-primary{
+  background: transparent; color: var(--ink); border: 1px solid var(--ink);
+  border-radius: 0; box-shadow: none;
+  font-family: 'Inter', sans-serif; font-size: .72rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+}
+.cart-drawer-foot .btn-primary:hover{ background: var(--ink); color: var(--cream); }
+.cart-drawer-foot .btn-ghost{
+  font-family: 'Inter', sans-serif; font-size: .72rem; letter-spacing: .14em;
+  text-transform: uppercase; color: #9a7c7c;
+}
+
+/* ===== Quote form ===== */
+.quote-section{ background: var(--paper); padding: 3rem 0; }
+.quote-card{ background: var(--cream); border: 1px solid var(--line); border-radius: 4px;
+  padding: 2rem; box-shadow: 8px 8px 0 rgba(42,26,26,.05); }
+.quote-section .eyebrow{ color: var(--rose); letter-spacing: .22em; }
+.quote-section h2{ font-family: var(--serif); font-size: 1.8rem; line-height: 1.15; }
+.quote-section h2 + .section-lead{ font-family: 'Inter', sans-serif; color: #5a4242; }
+
+/* ===== Video ===== */
+.video-section{ background: var(--paper); }
+.video-section .section-title{ font-family: var(--serif); font-size: 1.6rem; }
+.video-wrap{ border-radius: 4px; border-color: var(--line); box-shadow: 6px 6px 0 rgba(42,26,26,.05); }
+
+/* ===== Footer ===== */
+.site-footer{ background: var(--ink); color: var(--cream); border-top: none; }
+.site-footer a{ color: var(--cream); opacity: .8; }
+.site-footer a:hover{ opacity: 1; color: var(--rose-soft); }
+
+/* ===== Empty/loading states ===== */
+.catalog-empty, .catalog-loading{
+  font-family: var(--serif); font-style: italic; font-size: 1.05rem;
+  color: #9a7c7c; padding: 3rem 1rem;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 720px){
+  .page-header-compact{ padding: 2rem 0 1.5rem; }
+  .page-header-compact h1{ font-size: 2.1rem; }
+  .products-grid{ grid-template-columns: repeat(2, 1fr); gap: 1rem .8rem; }
+  .quote-card{ padding: 1.2rem; box-shadow: 4px 4px 0 rgba(42,26,26,.05); }
+}
+@media (max-width: 420px){
+  .products-grid{ grid-template-columns: 1fr; }
+}
