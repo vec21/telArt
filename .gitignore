@@ -1,5 +1,4 @@
-# Local config (não comitar)
-js/supabase-config.js
+# Local config (Ref SPEC v2.1.2: supabase-config.js agora é comitado)
 .vscode/mcp.json
 
 # OS / editor

@@ -1,12 +1,13 @@
 # SPEC — Spec-Driven Development (SDD)
 
 > **Projecto:** adrianaTelArt — Integração de formulário com Supabase + Deploy Vercel
-> **Versão:** 2.1.1
+> **Versão:** 2.1.2
 > **Estado:** Fase 2.1 em curso (DB criada). v2.0.0 em produção.
 > **Owner:** Veríssimo
 > **Última actualização:** 2026-05-19
 
 ## Changelog
+- **2.1.2** — Change Control: `js/supabase-config.js` passa a ser **comitado** (anon key é pública por design; segurança vem das RLS policies). Necessário porque o auto-deploy Vercel via git não tem acesso a ficheiros gitignored e o site é estático (sem env vars no client). `.example.js` mantido como referência histórica.
 - **2.1.1** — Change Control: categorias da tabela `produtos` alinhadas com o catálogo real da Tel'Art (`kit_bloguerinha`, `kit_skincare`, `buque`, `cesta`, `caneca`, `cantil`, `caixa_explosiva`, `outro`). Substitui o conjunto genérico inicial que não correspondia ao negócio.
 - **2.1.0** — Fase 2.1: catálogo dinâmico. Tabela `produtos` + Supabase Storage bucket `produtos` (public read, authenticated write). Tab Produtos no admin com CRUD + upload de imagem. `catalogo.html` passa a renderizar dinamicamente a partir do Supabase. Categorias fixas (`tapecaria`, `decoracao`, `tradicional`, `arte`, `outro`).
 - **2.0.0** — Major: introduz dashboard administrativo (`admin.html`) com Supabase Auth (email+password). Adiciona gestão de Mensagens e Newsletter. Sub-fases planeadas: 2.1 Produtos+Catálogo dinâmico, 2.2 Encomendas, 2.3 Settings, 2.4 Estatísticas. Mecanismo admin: pragmático (qualquer authenticated user). Storage Supabase activado (Fase 2.1).
