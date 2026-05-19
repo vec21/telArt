@@ -47,7 +47,7 @@
       <nav class="admin-tabs" role="tablist">
         <button type="button" class="admin-tab active" data-tab="mensagens" role="tab">Mensagens <span id="tabMensagensCount" class="badge"></span></button>
         <button type="button" class="admin-tab" data-tab="newsletter" role="tab">Newsletter <span id="tabNewsletterCount" class="badge"></span></button>
-        <button type="button" class="admin-tab disabled" data-tab="produtos" role="tab" disabled title="Em breve (Fase 2.1)">Produtos</button>
+        <button type="button" class="admin-tab" data-tab="produtos" role="tab">Produtos <span id="tabProdutosCount" class="badge"></span></button>
         <button type="button" class="admin-tab disabled" data-tab="encomendas" role="tab" disabled title="Em breve (Fase 2.2)">Encomendas</button>
         <button type="button" class="admin-tab disabled" data-tab="settings" role="tab" disabled title="Em breve (Fase 2.3)">Configurações</button>
         <button type="button" class="admin-tab disabled" data-tab="stats" role="tab" disabled title="Em breve (Fase 2.4)">Estatísticas</button>
@@ -96,6 +96,44 @@
           <button type="button" id="prevMensagens" class="btn btn-outline btn-sm" disabled>← Anterior</button>
           <span id="pageMensagens" class="muted">Página 1</span>
           <button type="button" id="nextMensagens" class="btn btn-outline btn-sm" disabled>Próxima →</button>
+        </div>
+      </section>
+
+      <!-- Produtos -->
+      <section id="panelProdutos" class="admin-panel" role="tabpanel" hidden>
+        <div class="admin-toolbar">
+          <h2>Catálogo de produtos</h2>
+          <div class="admin-toolbar-actions">
+            <select id="filterCategoria" class="admin-select">
+              <option value="">Todas as categorias</option>
+              <option value="kit_bloguerinha">Kit Bloguerinha</option>
+              <option value="kit_skincare">Kit Skincare</option>
+              <option value="buque">Buquê</option>
+              <option value="cesta">Cesta</option>
+              <option value="caneca">Caneca</option>
+              <option value="cantil">Cantil</option>
+              <option value="caixa_explosiva">Caixa Explosiva</option>
+              <option value="outro">Outro</option>
+            </select>
+            <select id="filterAtivo" class="admin-select">
+              <option value="">Activos e inactivos</option>
+              <option value="true">Só activos</option>
+              <option value="false">Só inactivos</option>
+            </select>
+            <input type="search" id="searchProdutos" class="admin-input" placeholder="Pesquisar nome..." />
+            <button type="button" id="refreshProdutos" class="btn btn-outline btn-sm">↻</button>
+            <button type="button" id="newProduto" class="btn btn-primary btn-sm">+ Novo produto</button>
+          </div>
+        </div>
+
+        <div id="produtosGrid" class="produtos-grid" aria-live="polite"></div>
+        <p id="emptyProdutos" class="admin-empty" hidden>Sem produtos.</p>
+        <p id="loadingProdutos" class="admin-empty">A carregar...</p>
+
+        <div class="admin-pagination">
+          <button type="button" id="prevProdutos" class="btn btn-outline btn-sm" disabled>← Anterior</button>
+          <span id="pageProdutos" class="muted">Página 1</span>
+          <button type="button" id="nextProdutos" class="btn btn-outline btn-sm" disabled>Próxima →</button>
         </div>
       </section>
 
@@ -154,9 +192,78 @@
         </div>
       </div>
     </div>
-  </section>
+    <!-- Modal de produto -->
+    <div id="productModal" class="admin-modal" hidden role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+      <div class="admin-modal-backdrop" data-close></div>
+      <div class="admin-modal-card">
+        <button type="button" class="admin-modal-close" data-close aria-label="Fechar">×</button>
+        <h3 id="productModalTitle">Novo produto</h3>
+        <form id="productForm" class="product-form" novalidate>
+          <input type="hidden" id="productId" />
+          <input type="hidden" id="productImagemPath" />
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+          <div class="product-form-grid">
+            <label class="field">
+              <span class="label-text">Nome *</span>
+              <input type="text" id="productNome" required minlength="2" />
+            </label>
+            <label class="field">
+              <span class="label-text">Slug (auto) *</span>
+              <input type="text" id="productSlug" required pattern="[a-z0-9\-]+" title="minúsculas, números e hífens" />
+            </label>
+            <label class="field">
+              <span class="label-text">Categoria *</span>
+              <select id="productCategoria" class="admin-select" required>
+                <option value="">— escolher —</option>
+                <option value="kit_bloguerinha">Kit Bloguerinha</option>
+                <option value="kit_skincare">Kit Skincare</option>
+                <option value="buque">Buquê</option>
+                <option value="cesta">Cesta</option>
+                <option value="caneca">Caneca</option>
+                <option value="cantil">Cantil</option>
+                <option value="caixa_explosiva">Caixa Explosiva</option>
+                <option value="outro">Outro</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="label-text">Preço (Kz) — vazio = "Sob consulta"</span>
+              <input type="number" id="productPreco" min="0" step="0.01" />
+            </label>
+            <label class="field">
+              <span class="label-text">Ordem</span>
+              <input type="number" id="productOrdem" value="0" step="1" />
+            </label>
+            <label class="field">
+              <span class="label-text">Imagem (PNG/JPG/WebP)</span>
+              <input type="file" id="productImagem" accept="image/png,image/jpeg,image/webp,image/gif" />
+              <img id="productImagemPreview" class="product-img-preview" alt="" hidden />
+            </label>
+            <label class="field field-full">
+              <span class="label-text">Descrição</span>
+              <textarea id="productDescricao" rows="3"></textarea>
+            </label>
+            <label class="field-check">
+              <input type="checkbox" id="productAtivo" checked />
+              <span>Activo (visível no catálogo público)</span>
+            </label>
+            <label class="field-check">
+              <input type="checkbox" id="productDestaque" />
+              <span>Destaque</span>
+            </label>
+          </div>
+
+          <div class="admin-modal-actions">
+            <button type="button" id="deleteProduct" class="btn btn-outline btn-sm" hidden>Eliminar</button>
+            <div class="spacer" style="flex:1"></div>
+            <button type="button" data-close class="btn btn-outline btn-sm">Cancelar</button>
+            <button type="submit" id="saveProduct" class="btn btn-primary btn-sm">Guardar</button>
+          </div>
+          <div id="productStatus" class="form-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+
+  </section>
   <script src="js/supabase-config.js"></script>
   <script src="js/supabase.js"></script>
   <script src="js/admin.js" defer></script>

@@ -248,9 +248,98 @@
 }
 .admin-modal-actions .field { margin:0; flex:1; min-width:180px; }
 
+/* ===== Produtos (v2.1) ===== */
+.produtos-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+  gap:1rem;
+}
+.produto-card {
+  background:#fff;
+  border-radius:12px;
+  border:1px solid rgba(15,23,42,0.06);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:transform .12s, box-shadow .12s;
+  cursor:pointer;
+}
+.produto-card:hover { transform:translateY(-2px); box-shadow:0 10px 25px rgba(15,23,42,0.08); }
+.produto-card.inactive { opacity:.55; }
+.produto-thumb {
+  aspect-ratio:1 / 1;
+  background:#f1f5f9;
+  position:relative;
+  overflow:hidden;
+}
+.produto-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.produto-thumb .no-img {
+  position:absolute; inset:0;
+  display:grid; place-items:center;
+  color:#94a3b8; font-size:.85rem;
+}
+.produto-flags { position:absolute; top:.5rem; left:.5rem; display:flex; gap:.25rem; flex-wrap:wrap; }
+.produto-flag {
+  font-size:.65rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  padding:.2rem .5rem;
+  border-radius:6px;
+  background:rgba(15,23,42,0.7);
+  color:#fff;
+}
+.produto-flag.flag-destaque { background:#f45b5b; }
+.produto-flag.flag-inactivo { background:#94a3b8; }
+.produto-body { padding:.85rem 1rem 1rem; display:flex; flex-direction:column; gap:.35rem; flex:1; }
+.produto-nome { margin:0; font-size:1rem; font-weight:600; color:#1e293b; }
+.produto-cat { font-size:.75rem; color:#64748b; text-transform:uppercase; letter-spacing:.04em; }
+.produto-preco { font-weight:700; color:#f45b5b; margin-top:auto; }
+.produto-preco.sob-consulta { color:#64748b; font-style:italic; font-weight:500; }
+
+/* Formulário modal produto */
+.product-form-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.85rem 1rem;
+  margin-bottom:1rem;
+}
+.product-form-grid .field { margin:0; display:flex; flex-direction:column; gap:.3rem; }
+.product-form-grid .field-full { grid-column:1 / -1; }
+.product-form-grid .field input,
+.product-form-grid .field select,
+.product-form-grid .field textarea {
+  padding:.55rem .75rem;
+  border:1px solid rgba(15,23,42,0.12);
+  border-radius:8px;
+  font-size:.9rem;
+  font-family:inherit;
+}
+.product-form-grid .field input:focus,
+.product-form-grid .field select:focus,
+.product-form-grid .field textarea:focus {
+  outline:none;
+  border-color:#f45b5b;
+  box-shadow:0 0 0 3px rgba(244,91,91,0.15);
+}
+.product-form-grid .field-check {
+  display:flex; align-items:center; gap:.5rem;
+  font-size:.9rem; color:#475569;
+}
+.product-form-grid .field-check input { width:1.1rem; height:1.1rem; }
+.product-img-preview {
+  margin-top:.4rem;
+  max-width:140px;
+  max-height:140px;
+  border-radius:8px;
+  border:1px solid rgba(15,23,42,0.08);
+  object-fit:cover;
+}
+
 @media (max-width:640px) {
   .admin-toolbar { flex-direction:column; align-items:stretch; }
   .admin-toolbar-actions { justify-content:flex-start; }
   .admin-table .col-msg { max-width:160px; }
   .admin-modal-card dl { grid-template-columns:1fr; }
+  .product-form-grid { grid-template-columns:1fr; }
 }

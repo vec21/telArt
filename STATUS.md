@@ -1,7 +1,7 @@
 # STATUS — adrianaTelArt
 
-> Última actualização: 2026-04-29
-> SPEC: [SPEC.md](SPEC.md) v2.1.0 (Fase 2.1 pausada — produção em v2.0.0)
+> Última actualização: 2026-05-19
+> SPEC: [SPEC.md](SPEC.md) v2.1.1 (Fase 2.1 em curso — DB+Storage criados, admin Produtos implementado)
 
 ---
 
@@ -46,24 +46,24 @@
 
 ---
 
-## 🟡 Em pausa — Fase 2.1 (Produtos + Storage + Catálogo dinâmico)
+## 🟡 Em curso — Fase 2.1 (Produtos + Storage + Catálogo dinâmico)
 
-> SPEC bumped a v2.1.0 (escopo, schema, RLS e DoD AC18-AC25 escritos), **mas implementação parada antes de criar tabela**.
+> SPEC bumped a **v2.1.1** (Change Control: categorias alinhadas com o catálogo real).
 
-**Bloqueador:** ferramentas MCP `apply_migration` e `execute_sql` desactivadas pelo utilizador. Necessário reactivar antes de continuar.
+**Trabalho feito:**
+- [SPEC.md §1.3, §2.1.ter, §5.4–5.6](SPEC.md) — escopo + schema + bucket
+- Categorias finais: `kit_bloguerinha`, `kit_skincare`, `buque`, `cesta`, `caneca`, `cantil`, `caixa_explosiva`, `outro`
+- [migrations/001_produtos.sql](migrations/001_produtos.sql) corrida — tabela `produtos` + RLS + trigger `updated_at` ✅
+- [migrations/002_storage_produtos.sql](migrations/002_storage_produtos.sql) corrida — bucket `produtos` (public) + policies ✅
+- [migrations/003_produtos_categorias_v211.sql](migrations/003_produtos_categorias_v211.sql) corrida — check constraint v2.1.1 ✅
+- **AC18, AC19 ✅** validados via `mcp_supabase_list_tables`
+- Tab Produtos no [admin.html](admin.html) + [css/admin.css](css/admin.css) + [js/admin.js](js/admin.js): grid de cards, filtros (categoria/ativo), search, paginate, modal CRUD com upload de imagem e toggles `ativo`/`destaque`
 
-**Trabalho já feito nesta fase:**
-- [SPEC.md §1.3, §2.1.ter, §5.4–5.6](SPEC.md) — escopo + schema `produtos` + bucket Storage definidos
-- Categorias acordadas: `tapecaria`, `decoracao`, `tradicional`, `arte`, `outro`
-
-**Falta executar (ordem):**
-1. Reactivar `mcp_supabase_apply_migration`
-2. Migration: tabela `produtos` + RLS + trigger `updated_at`
-3. Bucket Storage `produtos` (public read; auth write) + policies em `storage.objects`
-4. Tab Produtos no [admin.html](admin.html): list/filter/search, criar, editar, eliminar, upload imagem, toggle `ativo`/`destaque`
-5. Refactor [catalogo.html](catalogo.html) → fetch dinâmico de `produtos` ordenados por `ordem`
-6. Test local + deploy Vercel
-7. Validar AC18–AC25
+**Falta executar:**
+1. Teste local manual (login admin → criar/editar/eliminar produto + upload imagem)
+2. Refactor [catalogo.html](catalogo.html) → fetch dinâmico de `produtos` ordenados por `ordem` (AC23)
+3. Deploy Vercel
+4. Validar AC20–AC25 em produção
 
 > Prompt de retoma pronto em [NEXT-SESSION.md](NEXT-SESSION.md).
 

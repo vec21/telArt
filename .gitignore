@@ -1,5 +1,6 @@
 # Local config (não comitar)
 js/supabase-config.js
+.vscode/mcp.json
 
 # OS / editor
 .DS_Store
