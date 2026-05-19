@@ -315,46 +315,156 @@
     showToast('Carrinho limpo', 'info');
   });
 
-  // Exportar lista
+  // Gerar Proforma (PDF via window.print)
   exportListBtn && exportListBtn.addEventListener('click', ()=>{
     const lines = cartLines();
-    const win = window.open('', '_blank');
-    const listHtml = lines.length
-      ? lines.map(({item, qty}, idx)=> `<tr><td>${idx+1}</td><td>${esc(item.name)}</td><td>${esc(item.category)}</td><td>${qty}</td><td>Kz ${formatKz(Number(item.price) * qty)}</td></tr>`).join('')
-      : '<tr><td colspan="5">Nenhum item selecionado</td></tr>';
-    const total = formatKz(cartTotal());
+    if(!lines.length){
+      showToast('Adicione produtos antes de gerar a proforma', 'info');
+      return;
+    }
 
-    win.document.write(`
-      <html><head><title>Encomenda Tel'Art</title>
-      <style>
-        body{font-family:Inter,Arial;padding:20px;color:#111;max-width:800px;margin:0 auto}
-        .header{text-align:center;margin-bottom:2rem;border-bottom:2px solid #F45B5B;padding-bottom:1rem}
-        .slogan{color:#F45B5B;font-style:italic;margin:0.5rem 0}
-        table{width:100%;border-collapse:collapse;margin:1rem 0}
-        td,th{padding:8px 12px;border:1px solid #ddd;text-align:left}
-        th{background:#F45B5B;color:white}
-        .total-row{background:#f9f9f9;font-weight:bold}
-        .footer{margin-top:2rem;text-align:center;color:#666;font-size:0.9rem}
-        @media print{button{display:none}}
-      </style>
-      </head><body>
-      <div class="header">
-        <h1>Tel'Art - Encomenda</h1>
-        <p class="slogan">"O toque mágico para não espumar"</p>
-        <p>Fundada por Adriana • 14 de Janeiro 2024 • Angola</p>
+    // Dados do cliente (opcionais)
+    const clienteNome = (prompt('Nome do cliente (opcional):', '') || '').trim();
+    const clienteContacto = (prompt('Contacto do cliente — WhatsApp ou e-mail (opcional):', '') || '').trim();
+
+    // Numeração sequencial persistida em localStorage
+    const KEY = 'telart_proforma_seq';
+    const seq = (parseInt(localStorage.getItem(KEY) || '0', 10) + 1);
+    localStorage.setItem(KEY, String(seq));
+    const ano = new Date().getFullYear();
+    const numero = `PRO ${ano}/${String(seq).padStart(4, '0')}`;
+
+    const subtotal = cartTotal();
+    const dataEmissao = new Date().toLocaleDateString('pt-AO', { day:'2-digit', month:'long', year:'numeric' });
+    const validade = new Date(Date.now() + 7*24*60*60*1000).toLocaleDateString('pt-AO', { day:'2-digit', month:'long', year:'numeric' });
+
+    const itensHtml = lines.map(({item, qty}, idx) => {
+      const sub = Number(item.price) * qty;
+      return `<tr>
+        <td>${idx+1}</td>
+        <td><div class="prod">${esc(item.name)}</div><div class="cat">${esc(item.category)}</div></td>
+        <td class="num">${qty}</td>
+        <td class="num">Kz ${formatKz(Number(item.price))}</td>
+        <td class="num">Kz ${formatKz(sub)}</td>
+      </tr>`;
+    }).join('');
+
+    const win = window.open('', '_blank');
+    win.document.write(`<!doctype html>
+<html lang="pt-AO"><head>
+<meta charset="utf-8">
+<title>Proforma ${esc(numero)} — Tel'Art</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{font-family:'Inter',Arial,sans-serif;color:#2a1a1a;background:#fbf4ec;margin:0;padding:32px}
+  .sheet{max-width:780px;margin:0 auto;background:#fff8ed;padding:40px 44px;border:1px solid rgba(42,26,26,.1);box-shadow:8px 8px 0 rgba(42,26,26,.06)}
+  .top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid rgba(42,26,26,.15);padding-bottom:18px;margin-bottom:24px}
+  .brand h1{font-family:'Playfair Display',Georgia,serif;font-size:1.9rem;margin:0;letter-spacing:-.01em}
+  .brand .tag{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:#7a5c5c;font-size:.9rem;margin-top:4px}
+  .doc{text-align:right}
+  .doc .label{font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:#c94b6b;font-weight:700}
+  .doc .num{font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:700;margin-top:2px}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;font-size:.85rem}
+  .meta h3{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:#7a5c5c;margin:0 0 6px;font-weight:600}
+  .meta .val{color:#2a1a1a}
+  table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:.88rem}
+  thead th{background:#2a1a1a;color:#fff8ed;text-align:left;padding:10px 12px;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+  thead th.num,tbody td.num{text-align:right}
+  tbody td{padding:12px;border-bottom:1px dashed rgba(42,26,26,.12);vertical-align:top}
+  tbody .prod{font-family:'Playfair Display',Georgia,serif;font-size:1rem;font-weight:600}
+  tbody .cat{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#9a7c7c;margin-top:2px}
+  .totals{margin-top:8px;display:flex;justify-content:flex-end}
+  .totals table{width:auto;min-width:280px}
+  .totals td{padding:6px 12px;border:none}
+  .totals .lab{color:#7a5c5c;font-size:.78rem}
+  .totals .val{font-family:'Playfair Display',Georgia,serif;font-weight:600;text-align:right}
+  .totals .grand .lab{font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:#c94b6b;font-weight:700;border-top:1px solid rgba(42,26,26,.2);padding-top:10px}
+  .totals .grand .val{font-size:1.4rem;border-top:1px solid rgba(42,26,26,.2);padding-top:10px;color:#2a1a1a}
+  .notes{margin-top:24px;padding-top:18px;border-top:1px dashed rgba(42,26,26,.15);font-size:.78rem;color:#5a4242;line-height:1.55}
+  .notes strong{font-family:'Playfair Display',Georgia,serif;font-weight:600;display:block;margin-bottom:4px;color:#2a1a1a}
+  .foot{margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(42,26,26,.15);padding-top:16px;font-size:.78rem;color:#7a5c5c}
+  .foot .sig{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:1rem;color:#c94b6b}
+  .actions{max-width:780px;margin:18px auto 0;display:flex;justify-content:flex-end;gap:10px}
+  .actions button{font-family:'Inter',sans-serif;font-size:.74rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:.7rem 1.1rem;border:1px solid #2a1a1a;background:#2a1a1a;color:#fff8ed;cursor:pointer}
+  .actions button.alt{background:transparent;color:#2a1a1a}
+  @media print{
+    body{background:#fff;padding:0}
+    .sheet{box-shadow:none;border:none;background:#fff;max-width:none;padding:24px 28px}
+    .actions{display:none}
+    a{color:inherit;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="top">
+      <div class="brand">
+        <h1>Tel'Art</h1>
+        <div class="tag">O toque mágico para não espumar</div>
       </div>
+      <div class="doc">
+        <div class="label">Proforma</div>
+        <div class="num">${esc(numero)}</div>
+      </div>
+    </div>
+
+    <div class="meta">
+      <div>
+        <h3>Emitido por</h3>
+        <div class="val"><strong>Tel'Art</strong></div>
+        <div class="val">Luanda, Angola</div>
+        <div class="val">WhatsApp: +244 923 862 830</div>
+        <div class="val">contato@telart.ao</div>
+      </div>
+      <div>
+        <h3>Cliente</h3>
+        <div class="val"><strong>${esc(clienteNome || '—')}</strong></div>
+        <div class="val">${esc(clienteContacto || '—')}</div>
+        <h3 style="margin-top:14px">Datas</h3>
+        <div class="val">Emissão: ${esc(dataEmissao)}</div>
+        <div class="val">Válido até: ${esc(validade)}</div>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr>
+        <th style="width:34px">#</th>
+        <th>Produto / Serviço</th>
+        <th class="num" style="width:60px">Qtd</th>
+        <th class="num" style="width:130px">Preço unit.</th>
+        <th class="num" style="width:140px">Subtotal</th>
+      </tr></thead>
+      <tbody>${itensHtml}</tbody>
+    </table>
+
+    <div class="totals">
       <table>
-        <thead><tr><th>#</th><th>Produto/Serviço</th><th>Categoria</th><th>Qtd</th><th>Subtotal</th></tr></thead>
-        <tbody>${listHtml}</tbody>
-        <tfoot><tr class="total-row"><td colspan="4"><strong>Total da Encomenda</strong></td><td><strong>Kz ${total}</strong></td></tr></tfoot>
+        <tr><td class="lab">Subtotal</td><td class="val">Kz ${formatKz(subtotal)}</td></tr>
+        <tr class="grand"><td class="lab">Total</td><td class="val">Kz ${formatKz(subtotal)}</td></tr>
       </table>
-      <div class="footer">
-        <p>Gerado em ${new Date().toLocaleString('pt-AO')}</p>
-        <p><strong>WhatsApp:</strong> +244 923 862 830 • <strong>E-mail:</strong> contato@telart.ao</p>
-        <button onclick="window.print()" style="padding:10px 20px;background:#F45B5B;color:white;border:none;border-radius:5px;margin-top:1rem">Imprimir / Salvar PDF</button>
-      </div></body></html>
-    `);
+    </div>
+
+    <div class="notes">
+      <strong>Notas</strong>
+      Esta proforma é um documento de orçamento — não substitui factura fiscal. Valores em Kwanzas (AOA). Validade: 7 dias. Para confirmar a encomenda, contacte-nos pelo WhatsApp +244 923 862 830.
+    </div>
+
+    <div class="foot">
+      <div>Documento gerado em ${esc(new Date().toLocaleString('pt-AO'))}</div>
+      <div class="sig">Tel'Art • feito à mão</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="alt" onclick="window.close()">Fechar</button>
+    <button onclick="window.print()">Imprimir / Guardar PDF</button>
+  </div>
+</body></html>`);
     win.document.close();
+    showToast(`Proforma ${numero} gerada`, 'success');
   });
 
   // Inicialização
