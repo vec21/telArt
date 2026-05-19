@@ -29,15 +29,54 @@
   let catalog = [];
 
   const catalogGrid = $('#catalogGrid');
-  const cartCountEl = $('#cartCount');
-  const cartTotalEl = $('#cartTotal');
-  const exportListBtn = $('#exportList');
-  const clearCartBtn = $('#clearCart');
-  const buyWhatsAppBtn = $('#buyWhatsApp');
   const filterButtons = $$('.filter-btn');
 
+  // Cart drawer refs (v2.1.3 — Ref SPEC §12 Change Control v2.1.3)
+  const cartTrigger = $('#cartTrigger');
+  const cartBadge = $('#cartBadge');
+  const cartDrawer = $('#cartDrawer');
+  const cartBackdrop = $('#cartBackdrop');
+  const cartDrawerClose = $('#cartDrawerClose');
+  const cartDrawerBody = $('#cartDrawerBody');
+  const cartDrawerTotal = $('#cartDrawerTotal');
+  const buyWhatsAppBtn = $('#buyWhatsAppDrawer');
+  const exportListBtn = $('#exportListDrawer');
+  const clearCartBtn = $('#clearCartDrawer');
+  const toastStack = $('#toastStack');
+
   let currentFilter = 'all';
-  let cart = [];
+  // cart: Map<id, { item, qty }>
+  const cart = new Map();
+
+  // ---- Toast ----
+  function showToast(msg, variant){
+    if(!toastStack) return;
+    const t = document.createElement('div');
+    t.className = 'toast toast-' + (variant || 'success');
+    t.textContent = msg;
+    toastStack.appendChild(t);
+    requestAnimationFrame(()=> t.classList.add('is-visible'));
+    setTimeout(()=>{
+      t.classList.remove('is-visible');
+      setTimeout(()=> t.remove(), 250);
+    }, 1800);
+  }
+
+  // ---- Drawer open/close ----
+  function openDrawer(){
+    if(!cartDrawer) return;
+    cartDrawer.setAttribute('aria-hidden','false');
+    cartBackdrop && cartBackdrop.setAttribute('aria-hidden','false');
+    cartTrigger && cartTrigger.setAttribute('aria-expanded','true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer(){
+    if(!cartDrawer) return;
+    cartDrawer.setAttribute('aria-hidden','true');
+    cartBackdrop && cartBackdrop.setAttribute('aria-hidden','true');
+    cartTrigger && cartTrigger.setAttribute('aria-expanded','false');
+    document.body.style.overflow = '';
+  }
 
   // Escape básico para evitar HTML injection a partir de campos do CMS
   function esc(s){
@@ -143,39 +182,77 @@
     });
   }
 
-  // Carrinho
-  function updateCartUI(){
-    if(!cartCountEl || !cartTotalEl) return;
-    cartCountEl.textContent = String(cart.length);
-    const total = cart.reduce((s,i)=> s + Number(i.price || 0), 0);
-    cartTotalEl.textContent = formatKz(total);
-    
-    // atualizar link WhatsApp com resumo
-    const phone = '244923862830';
-    if(cart.length){
-      const lines = cart.map((it, idx)=> `${idx+1}. ${it.name} - Kz ${formatKz(it.price)}`).join('\n');
-      const tot = formatKz(total);
-      const message = `Olá Tel'Art! Gostaria de encomendar:
+  // ---- Cart state helpers ----
+  function cartCount(){
+    let n = 0; cart.forEach(v => n += v.qty); return n;
+  }
+  function cartTotal(){
+    let t = 0; cart.forEach(v => t += Number(v.item.price || 0) * v.qty); return t;
+  }
+  function cartLines(){
+    const arr = [];
+    cart.forEach(({item, qty}) => arr.push({item, qty}));
+    return arr;
+  }
 
-${lines}
-
-Total: Kz ${tot}
-
-"O toque mágico para não espumar" ✨
-
-Obrigado!`;
-      
-      const text = encodeURIComponent(message);
-      if(buyWhatsAppBtn) buyWhatsAppBtn.href = `https://wa.me/${phone}?text=${text}`;
+  function renderDrawer(){
+    if(!cartDrawerBody) return;
+    const lines = cartLines();
+    if(!lines.length){
+      cartDrawerBody.innerHTML = `
+        <div class="cart-empty-state">
+          <span class="cart-empty-icon" aria-hidden="true">🧺</span>
+          <p>O seu carrinho está vazio.</p>
+          <p style="font-size:.85rem;opacity:.8">Adicione produtos do catálogo para começar.</p>
+        </div>`;
     } else {
-      if(buyWhatsAppBtn) buyWhatsAppBtn.href = `https://wa.me/${phone}`;
+      cartDrawerBody.innerHTML = lines.map(({item, qty}) => `
+        <div class="cart-item" data-id="${esc(item.id)}">
+          <img class="cart-item-img" src="${esc(item.image)}" alt="${esc(item.name)}" loading="lazy">
+          <div class="cart-item-info">
+            <p class="cart-item-name">${esc(item.name)}</p>
+            <p class="cart-item-cat">${esc(item.category)}</p>
+            <div class="cart-item-price">Kz ${formatKz(Number(item.price) * qty)}</div>
+            <button class="cart-item-remove" type="button" data-action="remove" data-id="${esc(item.id)}">Remover</button>
+          </div>
+          <div class="cart-qty" role="group" aria-label="Quantidade">
+            <button type="button" data-action="dec" data-id="${esc(item.id)}" aria-label="Diminuir">−</button>
+            <span class="cart-qty-val">${qty}</span>
+            <button type="button" data-action="inc" data-id="${esc(item.id)}" aria-label="Aumentar">+</button>
+          </div>
+        </div>
+      `).join('');
     }
   }
 
-  // Eventos: adicionar ao carrinho
+  function updateCartUI(){
+    const n = cartCount();
+    const t = cartTotal();
+    if(cartBadge){
+      cartBadge.textContent = String(n);
+      cartBadge.setAttribute('data-empty', n === 0 ? 'true' : 'false');
+    }
+    if(cartDrawerTotal) cartDrawerTotal.textContent = formatKz(t);
+
+    // WhatsApp link
+    const phone = '244923862830';
+    if(buyWhatsAppBtn){
+      if(n > 0){
+        const lines = cartLines().map(({item, qty}, idx) =>
+          `${idx+1}. ${item.name} (x${qty}) - Kz ${formatKz(Number(item.price) * qty)}`
+        ).join('\n');
+        const msg = `Olá Tel'Art! Gostaria de encomendar:\n\n${lines}\n\nTotal: Kz ${formatKz(t)}\n\n"O toque mágico para não espumar" ✨\n\nObrigado!`;
+        buyWhatsAppBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+      } else {
+        buyWhatsAppBtn.href = `https://wa.me/${phone}`;
+      }
+    }
+    renderDrawer();
+  }
+
+  // ---- Add / qty handlers ----
   function bindAddButtons(){
     if(!catalogGrid) return;
-    // Remover listeners anteriores
     catalogGrid.removeEventListener('click', handleAddClick);
     catalogGrid.addEventListener('click', handleAddClick);
   }
@@ -184,34 +261,69 @@ Obrigado!`;
     const btn = ev.target.closest('button[data-id]');
     if(!btn) return;
     const id = btn.getAttribute('data-id');
-    const item = catalog.find(i=> String(i.id) === String(id));
+    const item = catalog.find(i => String(i.id) === String(id));
     if(!item) return;
-    
-    cart.push(item);
+
+    const entry = cart.get(id);
+    if(entry){ entry.qty += 1; }
+    else { cart.set(id, { item, qty: 1 }); }
+
+    btn.setAttribute('data-added', 'true');
     const original = btn.innerHTML;
-    btn.disabled = true;
     btn.innerHTML = '✓ Adicionado';
-    setTimeout(()=>{ 
-      btn.innerHTML = original; 
-      btn.disabled = false; 
+    setTimeout(()=>{
+      btn.innerHTML = original;
+      btn.removeAttribute('data-added');
     }, 900);
+
+    showToast(`${item.name} adicionado ao carrinho`, 'success');
     updateCartUI();
   }
 
+  // Drawer item interactions (+/−/remove)
+  cartDrawerBody && cartDrawerBody.addEventListener('click', (ev) => {
+    const btn = ev.target.closest('button[data-action]');
+    if(!btn) return;
+    const id = btn.getAttribute('data-id');
+    const action = btn.getAttribute('data-action');
+    const entry = cart.get(id);
+    if(!entry) return;
+    if(action === 'inc') entry.qty += 1;
+    else if(action === 'dec'){
+      entry.qty -= 1;
+      if(entry.qty <= 0) cart.delete(id);
+    } else if(action === 'remove'){
+      cart.delete(id);
+      showToast(`${entry.item.name} removido`, 'info');
+    }
+    updateCartUI();
+  });
+
+  // Drawer open/close bindings
+  cartTrigger && cartTrigger.addEventListener('click', openDrawer);
+  cartDrawerClose && cartDrawerClose.addEventListener('click', closeDrawer);
+  cartBackdrop && cartBackdrop.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && cartDrawer && cartDrawer.getAttribute('aria-hidden') === 'false') closeDrawer();
+  });
+
   // Limpar carrinho
   clearCartBtn && clearCartBtn.addEventListener('click', ()=>{
-    cart = [];
+    if(!cart.size) return;
+    cart.clear();
     updateCartUI();
+    showToast('Carrinho limpo', 'info');
   });
 
   // Exportar lista
   exportListBtn && exportListBtn.addEventListener('click', ()=>{
+    const lines = cartLines();
     const win = window.open('', '_blank');
-    const listHtml = cart.length 
-      ? cart.map((it, idx)=> `<tr><td>${idx+1}</td><td>${it.name}</td><td>${it.category}</td><td>Kz ${formatKz(it.price)}</td></tr>`).join('') 
-      : '<tr><td colspan="4">Nenhum item selecionado</td></tr>';
-    const total = formatKz(cart.reduce((s,i)=> s + Number(i.price || 0), 0));
-    
+    const listHtml = lines.length
+      ? lines.map(({item, qty}, idx)=> `<tr><td>${idx+1}</td><td>${esc(item.name)}</td><td>${esc(item.category)}</td><td>${qty}</td><td>Kz ${formatKz(Number(item.price) * qty)}</td></tr>`).join('')
+      : '<tr><td colspan="5">Nenhum item selecionado</td></tr>';
+    const total = formatKz(cartTotal());
+
     win.document.write(`
       <html><head><title>Encomenda Tel'Art</title>
       <style>
@@ -232,9 +344,9 @@ Obrigado!`;
         <p>Fundada por Adriana • 14 de Janeiro 2024 • Angola</p>
       </div>
       <table>
-        <thead><tr><th>#</th><th>Produto/Serviço</th><th>Categoria</th><th>Preço</th></tr></thead>
+        <thead><tr><th>#</th><th>Produto/Serviço</th><th>Categoria</th><th>Qtd</th><th>Subtotal</th></tr></thead>
         <tbody>${listHtml}</tbody>
-        <tfoot><tr class="total-row"><td colspan="3"><strong>Total da Encomenda</strong></td><td><strong>Kz ${total}</strong></td></tr></tfoot>
+        <tfoot><tr class="total-row"><td colspan="4"><strong>Total da Encomenda</strong></td><td><strong>Kz ${total}</strong></td></tr></tfoot>
       </table>
       <div class="footer">
         <p>Gerado em ${new Date().toLocaleString('pt-AO')}</p>

@@ -36,6 +36,10 @@
       </nav>
 
       <div class="header-controls">
+        <button type="button" id="cartTrigger" class="cart-trigger" aria-label="Abrir carrinho" aria-controls="cartDrawer" aria-expanded="false">
+          <span class="cart-icon" aria-hidden="true">🛒</span>
+          <span class="cart-badge" id="cartBadge" data-empty="true">0</span>
+        </button>
         <a class="btn btn-ghost" id="whatsappBtn" href="https://wa.me/244923862830" target="_blank" rel="noopener">Compre pelo WhatsApp</a>
         <button id="menuToggle" class="hamburger" aria-expanded="false" aria-controls="mobileMenu" aria-label="Abrir menu">
           <span></span><span></span><span></span>
@@ -85,16 +89,6 @@
 
         <div class="products-grid" id="catalogGrid" aria-live="polite">
           <!-- Produtos gerados via JS -->
-        </div>
-
-        <div class="catalog-actions">
-          <button id="exportList" class="btn btn-primary">Exportar lista / Imprimir</button>
-          <button id="clearCart" class="btn btn-ghost">Limpar seleção</button>
-          <a id="buyWhatsApp" class="btn btn-accent" href="#" target="_blank" rel="noopener">Comprar pelo WhatsApp</a>
-        </div>
-
-        <div id="cartSummary" class="cart-summary" aria-live="polite">
-          <strong>Seleção:</strong> <span id="cartCount">0</span> item(s) • Total: Kz <span id="cartTotal">0,00</span>
         </div>
       </div>
     </section>
@@ -238,6 +232,36 @@
       </nav>
     </div>
   </footer>
+
+  <!-- Cart drawer (v2.1.3) -->
+  <div id="cartBackdrop" class="cart-backdrop" aria-hidden="true"></div>
+  <aside id="cartDrawer" class="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cartDrawerTitle" aria-hidden="true">
+    <div class="cart-drawer-head">
+      <h2 id="cartDrawerTitle">A sua selecção</h2>
+      <button type="button" class="cart-drawer-close" id="cartDrawerClose" aria-label="Fechar carrinho">×</button>
+    </div>
+    <div class="cart-drawer-body" id="cartDrawerBody">
+      <div class="cart-empty-state" id="cartEmptyState">
+        <span class="cart-empty-icon" aria-hidden="true">🧺</span>
+        <p>O seu carrinho está vazio.</p>
+        <p style="font-size:.85rem;opacity:.8">Adicione produtos do catálogo para começar.</p>
+      </div>
+    </div>
+    <div class="cart-drawer-foot">
+      <div class="cart-foot-row">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-val">Kz <span id="cartDrawerTotal">0,00</span></span>
+      </div>
+      <div class="cart-foot-actions">
+        <a id="buyWhatsAppDrawer" class="btn btn-accent" href="https://wa.me/244923862830" target="_blank" rel="noopener">Finalizar pelo WhatsApp</a>
+        <button id="exportListDrawer" class="btn btn-primary" type="button">Exportar lista / Imprimir</button>
+        <button id="clearCartDrawer" class="btn btn-ghost" type="button">Limpar selecção</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Toast stack -->
+  <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
