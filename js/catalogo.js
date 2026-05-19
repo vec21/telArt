@@ -57,7 +57,7 @@
     if(catalogGrid) catalogGrid.innerHTML = '<p class="catalog-loading">A carregar catálogo...</p>';
     const { data, error } = await client
       .from('produtos')
-      .select('id, nome, slug, categoria, preco_kz, descricao, imagem_url, ordem, destaque')
+      .select('id, nome, slug, categoria, preco, descricao, imagem_url, ordem, destaque')
       .eq('ativo', true)
       .order('ordem', { ascending: true })
       .order('created_at', { ascending: false });
@@ -72,7 +72,7 @@
       categoria: p.categoria,
       category: CATEGORIA_LABELS[p.categoria] || p.categoria || 'Outro',
       name: p.nome,
-      price: Number(p.preco_kz) || 0,
+      price: Number(p.preco) || 0,
       description: p.descricao || '',
       image: p.imagem_url || 'assets/logo.png',
       destaque: !!p.destaque
