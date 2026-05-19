@@ -180,6 +180,10 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 
 .page-header{background:linear-gradient(135deg,var(--accent-light),var(--accent-warm));padding:2rem 0;text-align:center;color:#351b1b}
 .page-header h1{font-size:2rem;margin:0 0 .5rem;color:#351b1b}
 .page-header p{margin:0;font-size:1.1rem;opacity:0.8}
+.page-header-compact{padding:1rem 0}
+.page-header-compact h1{font-size:1.4rem;margin:0}
+.page-header-compact p{font-size:.85rem;opacity:.7;margin:.2rem 0 0}
+.section-tight{padding:1.2rem 0}
 
 /* Navigation active state */
 .nav-list a.active{background:var(--glass);color:var(--accent);font-weight:600}
