@@ -1,0 +1,186 @@
+/* css/theme-artisan.css — identidade boutique global (v2.1.5)
+ * Aplica-se a index, sobre, contacto e 404 (catálogo já tem o seu próprio).
+ * Override em cima de style.css. Mantém comportamento — só altera estética.
+ */
+
+:root{
+  --serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --ink: #2a1a1a;
+  --paper: #fbf4ec;
+  --paper-2: #f4e9dc;
+  --rose: #c94b6b;
+  --rose-soft: #f3b9be;
+  --leaf: #6b8e5a;
+  --cream: #fff8ed;
+  --line: rgba(42,26,26,.08);
+}
+
+body{ background: var(--paper); color: var(--ink); }
+
+/* ===== Tipografia ===== */
+h1, h2, h3, .serif,
+.hero-title, .section-title, .newsletter-copy h2, .cta h2,
+.brand-name{
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.hero-title{ font-weight: 600; font-size: clamp(2.2rem, 4.8vw, 3.2rem); line-height: 1.05; }
+.hero-title em{ font-style: italic; color: var(--rose); font-weight: 500; }
+.hero-sub, .section-lead{ font-family: 'Inter', sans-serif; color: #5a4242; }
+
+.eyebrow{
+  font-family: 'Inter', sans-serif; font-size: .72rem; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--rose); font-weight: 700;
+  display: inline-flex; align-items: center; gap: .6rem; margin-bottom: .6rem;
+}
+.eyebrow::before{
+  content: ""; height: 1px; background: var(--rose); opacity: .5; width: 24px;
+}
+
+/* ===== Header / nav ===== */
+.site-header{ background: rgba(251, 244, 236, .92); border-bottom: 1px solid var(--line); }
+.brand-name{ font-size: 1.35rem; font-weight: 700; }
+.brand-tag{ font-family: var(--serif); font-style: italic; color: #7a5c5c; font-size: .82rem; font-weight: 500; }
+.nav-list a{ color: var(--ink); opacity: .75; font-size: .92rem; font-family: 'Inter', sans-serif; }
+.nav-list a:hover, .nav-list a.active{ opacity: 1; background: transparent; color: var(--rose); }
+.nav-list a.active{ position: relative; }
+.nav-list a.active::after{
+  content: ""; position: absolute; left: .7rem; right: .7rem; bottom: .15rem; height: 2px;
+  background: var(--rose); border-radius: 2px;
+}
+
+/* ===== Botões ===== */
+.btn{
+  font-family: 'Inter', sans-serif;
+  border-radius: 0;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-size: .78rem;
+  transition: background .18s, color .18s, transform .12s, border-color .18s;
+}
+.btn:active{ transform: scale(.98); }
+.btn-primary{
+  background: var(--ink); color: var(--cream); border: 1px solid var(--ink); box-shadow: none;
+}
+.btn-primary:hover{ background: var(--rose); border-color: var(--rose); color: #fff; }
+.btn-accent{
+  background: transparent; color: var(--ink); border: 1px solid var(--ink);
+}
+.btn-accent:hover{ background: var(--ink); color: var(--cream); }
+.btn-ghost{
+  background: transparent; color: var(--ink); border: 1px solid var(--line);
+  text-transform: uppercase; letter-spacing: .14em;
+}
+.btn-ghost:hover{ border-color: var(--ink); color: var(--rose); }
+.btn-lg{ padding: .95rem 1.4rem; font-size: .82rem; }
+
+/* ===== Hero (home) ===== */
+.hero{
+  background: linear-gradient(180deg, var(--cream) 0%, var(--paper) 100%);
+  padding: 3.5rem 0 3rem;
+  position: relative; overflow: hidden;
+}
+.hero::before{
+  content: ""; position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(42,26,26,.06) 1px, transparent 0);
+  background-size: 14px 14px; opacity: .5; pointer-events: none;
+}
+.hero .container{ position: relative; z-index: 1; }
+.trust-logotypes li{
+  font-family: var(--serif); font-style: italic; color: #7a5c5c;
+  font-size: .95rem; border-top: 1px dashed var(--line); padding-top: 1rem; margin-top: 1.4rem;
+}
+
+/* hero visual card mais editorial */
+.device-mock{
+  background: var(--cream); border: 1px solid var(--line); border-radius: 4px;
+  box-shadow: 8px 8px 0 rgba(42,26,26,.06);
+  padding: 1.4rem;
+}
+.device-mock .card{
+  background: transparent; box-shadow: none; border: none; padding: 0;
+}
+.device-mock h3{
+  font-family: var(--serif); font-size: 1.3rem; margin: 0 0 .4rem; color: var(--ink);
+}
+.device-mock p{
+  font-family: 'Inter', sans-serif; color: #5a4242; margin: 0;
+}
+
+/* ===== Sections genéricas ===== */
+.section{ padding: 3rem 0; }
+.section.alt{ background: var(--paper); }
+.section-title{ font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.15; }
+
+/* ===== Newsletter ===== */
+.newsletter-section{ background: var(--paper); }
+.newsletter-inner{ gap: 2rem; }
+.newsletter-form{
+  background: var(--cream); border: 1px solid var(--line); border-radius: 4px;
+  padding: 1.4rem; box-shadow: 6px 6px 0 rgba(42,26,26,.05);
+}
+.newsletter-form input{
+  border: 1px solid var(--line); border-radius: 0; background: var(--paper);
+  padding: .8rem 1rem; font-family: 'Inter', sans-serif;
+}
+.newsletter-form input:focus{ outline: none; border-color: var(--ink); }
+
+/* ===== CTA ===== */
+.cta{
+  background: var(--ink); color: var(--cream);
+  padding: 3rem 0; position: relative;
+}
+.cta h2{ color: var(--cream); font-family: var(--serif); }
+.cta p{ color: rgba(255,248,237,.78); font-family: 'Inter', sans-serif; }
+.cta .btn-accent{
+  background: var(--rose); border-color: var(--rose); color: #fff;
+}
+.cta .btn-accent:hover{ background: #fff; color: var(--ink); border-color: #fff; }
+
+/* ===== Cards genéricos ===== */
+.card{
+  background: var(--cream); border: 1px solid var(--line); border-radius: 4px;
+  box-shadow: 6px 6px 0 rgba(42,26,26,.05);
+  padding: 1.4rem;
+}
+.card h3{ font-family: var(--serif); font-size: 1.2rem; margin: 0 0 .4rem; color: var(--ink); }
+
+/* ===== Formulários ===== */
+.field input, .field textarea, .field select,
+input[type="text"], input[type="email"], input[type="tel"], input[type="number"],
+textarea, select{
+  border: 1px solid var(--line); border-radius: 0; background: var(--paper);
+  font-family: 'Inter', sans-serif; padding: .7rem .9rem;
+}
+.field input:focus, .field textarea:focus, .field select:focus,
+input:focus, textarea:focus, select:focus{ outline: none; border-color: var(--ink); }
+.label-text{
+  font-family: 'Inter', sans-serif; font-size: .72rem; letter-spacing: .14em;
+  text-transform: uppercase; color: #7a5c5c; font-weight: 600;
+}
+
+/* ===== Footer ===== */
+.site-footer{ background: var(--ink); color: var(--cream); border-top: none; }
+.site-footer a{ color: var(--cream); opacity: .8; font-family: 'Inter', sans-serif; }
+.site-footer a:hover{ opacity: 1; color: var(--rose-soft); }
+
+/* ===== 404 ===== */
+.error-section{
+  min-height: 60vh; display: grid; place-items: center; text-align: center;
+  background: linear-gradient(180deg, var(--cream) 0%, var(--paper) 100%);
+  padding: 4rem 1rem;
+}
+.error-section h1{ font-family: var(--serif); font-size: clamp(3rem, 8vw, 5rem); margin: 0 0 .5rem; }
+.error-section h1 em{ font-style: italic; color: var(--rose); }
+.error-section p{ font-family: 'Inter', sans-serif; color: #5a4242; }
+
+/* ===== Responsivo ===== */
+@media (max-width: 720px){
+  .hero{ padding: 2.4rem 0 2rem; }
+  .hero-title{ font-size: 2rem; }
+  .device-mock{ box-shadow: 4px 4px 0 rgba(42,26,26,.05); }
+}
