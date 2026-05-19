@@ -1,7 +1,7 @@
 # STATUS — adrianaTelArt
 
 > Última actualização: 2026-05-19
-> SPEC: [SPEC.md](SPEC.md) v2.1.1 (Fase 2.1 em curso — DB+Storage criados, admin Produtos implementado)
+> SPEC: [SPEC.md](SPEC.md) v2.1.2 (Fase 2.1 — admin Produtos em produção; catálogo público dinâmico)
 
 ---
 
@@ -59,11 +59,13 @@
 - **AC18, AC19 ✅** validados via `mcp_supabase_list_tables`
 - Tab Produtos no [admin.html](admin.html) + [css/admin.css](css/admin.css) + [js/admin.js](js/admin.js): grid de cards, filtros (categoria/ativo), search, paginate, modal CRUD com upload de imagem e toggles `ativo`/`destaque`
 
+**Trabalho feito (cont.):**
+- Login admin + criar produto validado em produção (badge `Produtos 1`, card visível) — **AC20, AC21, AC22 ✅**
+- [js/catalogo.js](js/catalogo.js) refactored: `loadCatalog()` async via `client.from('produtos').select(...).eq('ativo', true).order('ordem')`; filtros por slug DB; mantém carrinho + export PDF + WhatsApp — **AC23 ✅ (pendente deploy)**
+
 **Falta executar:**
-1. Teste local manual (login admin → criar/editar/eliminar produto + upload imagem)
-2. Refactor [catalogo.html](catalogo.html) → fetch dinâmico de `produtos` ordenados por `ordem` (AC23)
-3. Deploy Vercel
-4. Validar AC20–AC25 em produção
+1. Deploy Vercel (push commit)
+2. Validar AC23–AC25 em produção (catalogo público mostra produto criado)
 
 > Prompt de retoma pronto em [NEXT-SESSION.md](NEXT-SESSION.md).
 

@@ -13,60 +13,20 @@
     return withThousands + ',' + decimals;
   }
 
-  // CATÁLOGO COMPLETO - Produtos e Serviços
-  const catalog = [
-    // Kit Bloguerinha (4 imagens disponíveis)
-    { id: 'blog1', category:'Kit Bloguerinha', name:'Kit Bloguerinha 1', price: 2500.00, type: 'produto', image: 'assets/produtos/KitBloguerinha/IMG-20251018-WA0050.jpg' },
-    { id: 'blog2', category:'Kit Bloguerinha', name:'Kit Bloguerinha 2', price: 3000.00, type: 'produto', image: 'assets/produtos/KitBloguerinha/IMG-20251018-WA0051.jpg' },
-    { id: 'blog3', category:'Kit Bloguerinha', name:'Kit Bloguerinha 3', price: 3500.00, type: 'produto', image: 'assets/produtos/KitBloguerinha/IMG-20251018-WA0053.jpg' },
-    { id: 'blog4', category:'Kit Bloguerinha', name:'Kit Bloguerinha 4', price: 5000.00, type: 'produto', image: 'assets/produtos/KitBloguerinha/IMG-20251018-WA0054.jpg' },
-    { id: 'blog5', category:'Kit Bloguerinha', name:'Kit Bloguerinha 5', price: 6000.00, type: 'produto', image: 'assets/produtos/KitBloguerinha/IMG-20251018-WA0050.jpg' },
-    { id: 'blog6', category:'Kit Bloguerinha', name:'Kit Bloguerinha 6', price: 7000.00, type: 'produto', image: 'assets/produtos/KitBloguerinha/IMG-20251018-WA0051.jpg' },
+  // Labels legíveis por slug de categoria (alinhado com SPEC §5.4)
+  const CATEGORIA_LABELS = {
+    kit_bloguerinha: 'Kit Bloguerinha',
+    kit_skincare: 'Kit Skincare',
+    buque: 'Buquê',
+    cesta: 'Cesta',
+    caneca: 'Caneca',
+    cantil: 'Cantil',
+    caixa_explosiva: 'Caixa Explosiva',
+    outro: 'Outro'
+  };
 
-    // Kits de skincare (4 imagens disponíveis)
-    { id: 'skin1', category:'Kits de Skincare', name:'Kit Skincare Premium', price: 13500.00, type: 'produto', image: 'assets/produtos/KitsSkincare/KitSkincare1.jpg' },
-    { id: 'skin2', category:'Kits de Skincare', name:'Kit Skincare Completo', price: 16500.00, type: 'produto', image: 'assets/produtos/KitsSkincare/KitSkincare2.jpg' },
-
-    // Canecas (1 imagem disponível)
-    { id: 'can1', category:'Canecas', name:'Caneca Mágica Personalizada', price: 5000.00, type: 'produto', image: 'assets/produtos/Canecas/CanecaMágica1.jpg' },
-    { id: 'can2', category:'Canecas', name:'Caneca Mágica Premium', price: 10000.00, type: 'produto', image: 'assets/produtos/Canecas/CanecaMágica1.jpg' },
-
-    // Conjunto de cantis (2 imagens disponíveis)
-    { id: 'cantis', category:'Cantis', name:'Conjunto de três cantis', price: 8500.00, type: 'produto', image: 'assets/produtos/Cantis/Conjuntode trêscantis1.jpg' },
-
-    // Buquês de flores de cetim
-    { id: 'cetim1', category:'Buquês', name:'Buquê de Cetim Clássico', price: 5000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueNatural1.jpg' },
-    { id: 'cetim2', category:'Buquês', name:'Buquê de Cetim Elegante', price: 6500.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueNatural2.jpg' },
-    { id: 'cetim3', category:'Buquês', name:'Buquê de Cetim Premium', price: 8000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueNatural1.jpg' },
-    { id: 'cetim4', category:'Buquês', name:'Buquê de Cetim Luxo', price: 9000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueNatural2.jpg' },
-
-    // Buquês naturais (2 imagens disponíveis)
-    { id: 'nat1', category:'Buquês', name:'Buquê Natural Simples', price: 5000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueNatural1.jpg' },
-    { id: 'nat2', category:'Buquês', name:'Buquê Natural Médio', price: 7500.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueNatural2.jpg' },
-    { id: 'nat3', category:'Buquês', name:'Buquê Natural Grande', price: 9000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueNatural1.jpg' },
-    { id: 'nat4', category:'Buquês', name:'Buquê Natural Premium', price: 15000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueNatural2.jpg' },
-    { id: 'nat5', category:'Buquês', name:'Buquê Natural Luxo', price: 20000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueNatural1.jpg' },
-
-    // Buquês de doces (2 imagens disponíveis)
-    { id: 'doc1', category:'Buquês', name:'Buquê de Doces Pequeno', price: 5000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueDoce1.jpg' },
-    { id: 'doc2', category:'Buquês', name:'Buquê de Doces Médio', price: 7500.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueDoce2.jpg' },
-    { id: 'doc3', category:'Buquês', name:'Buquê de Doces Grande', price: 9000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueDoce1.jpg' },
-    { id: 'doc4', category:'Buquês', name:'Buquê de Doces Premium', price: 10000.00, type: 'servico', image: 'assets/produtos/Serviços/BuqueDoce2.jpg' },
-
-    // Buquês de dinheiro (3 imagens disponíveis)
-    { id: 'din20', category:'Buquês', name:'Buquê com 20.000 Kz', price: 7000.00, type: 'servico', image: 'assets/produtos/Serviços/Buquêde20000kz.jpg' },
-    { id: 'din50', category:'Buquês', name:'Buquê com 50.000 Kz', price: 12000.00, type: 'servico', image: 'assets/produtos/Serviços/Buquêde50000kz.jpg' },
-    { id: 'din100', category:'Buquês', name:'Buquê com 100.000 Kz', price: 25000.00, type: 'servico', image: 'assets/produtos/Serviços/Buquêde30000kz.jpg' },
-
-    // Cestas de pequeno almoço (1 imagem disponível)
-    { id: 'cesta1', category:'Cestas', name:'Cesta Pequeno-almoço Luxo', price: 30000.00, type: 'servico', image: 'assets/produtos/Serviços/CestaPequeno-almoço1.jpg' },
-    { id: 'cesta2', category:'Cestas', name:'Cesta Pequeno-almoço Premium', price: 25000.00, type: 'servico', image: 'assets/produtos/Serviços/CestaPequeno-almoço1.jpg' },
-    { id: 'cesta3', category:'Cestas', name:'Cesta Pequeno-almoço Simples', price: 15000.00, type: 'servico', image: 'assets/produtos/Serviços/CestaPequeno-almoço1.jpg' },
-
-    // Caixas explosivas (1 imagem disponível)
-    { id: 'caix1', category:'Caixa Explosiva', name:'Caixa Explosiva Standard', price: 15000.00, type: 'servico', image: 'assets/produtos/Serviços/CaixaExplosiva2.jpg' },
-    { id: 'caix2', category:'Caixa Explosiva', name:'Caixa Explosiva Premium', price: 20000.00, type: 'servico', image: 'assets/produtos/Serviços/CaixaExplosiva2.jpg' }
-  ];
+  // Catálogo carregado dinamicamente do Supabase. Ref: SPEC §6.4, AC23
+  let catalog = [];
 
   const catalogGrid = $('#catalogGrid');
   const cartCountEl = $('#cartCount');
@@ -79,30 +39,75 @@
   let currentFilter = 'all';
   let cart = [];
 
+  // Escape básico para evitar HTML injection a partir de campos do CMS
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[c]);
+  }
+
+  // Carrega produtos activos do Supabase. Ref: SPEC §6.4, AC23
+  async function loadCatalog(){
+    const client = window.supabaseClient;
+    if(!client){
+      console.error('[catalogo] Supabase client indisponível.');
+      if(catalogGrid) catalogGrid.innerHTML = '<p class="catalog-empty">Não foi possível carregar o catálogo.</p>';
+      return;
+    }
+    if(catalogGrid) catalogGrid.innerHTML = '<p class="catalog-loading">A carregar catálogo...</p>';
+    const { data, error } = await client
+      .from('produtos')
+      .select('id, nome, slug, categoria, preco_kz, descricao, imagem_url, ordem, destaque')
+      .eq('ativo', true)
+      .order('ordem', { ascending: true })
+      .order('created_at', { ascending: false });
+    if(error){
+      console.error('[catalogo] Erro ao carregar produtos:', error);
+      if(catalogGrid) catalogGrid.innerHTML = '<p class="catalog-empty">Não foi possível carregar o catálogo.</p>';
+      return;
+    }
+    catalog = (data || []).map(p => ({
+      id: p.id,
+      slug: p.slug,
+      categoria: p.categoria,
+      category: CATEGORIA_LABELS[p.categoria] || p.categoria || 'Outro',
+      name: p.nome,
+      price: Number(p.preco_kz) || 0,
+      description: p.descricao || '',
+      image: p.imagem_url || 'assets/logo.png',
+      destaque: !!p.destaque
+    }));
+  }
+
   // Render catálogo
   function renderCatalog(filterCategory = 'all'){
     if(!catalogGrid) return;
     catalogGrid.innerHTML = '';
-    
-    const filteredItems = filterCategory === 'all' 
-      ? catalog 
-      : catalog.filter(item => item.category === filterCategory);
-    
+
+    const filteredItems = filterCategory === 'all'
+      ? catalog
+      : catalog.filter(item => item.categoria === filterCategory);
+
+    if(!filteredItems.length){
+      catalogGrid.innerHTML = '<p class="catalog-empty">Sem produtos nesta categoria.</p>';
+      return;
+    }
+
     filteredItems.forEach(item=>{
       const el = document.createElement('article');
       el.className = 'product-card';
-      const typeLabel = item.type === 'produto' ? 'Produto' : 'Serviço';
+      const badge = item.destaque ? '<div class="product-type">Destaque</div>' : '';
       el.innerHTML = `
         <div class="product-media">
-          <img src="${item.image}" alt="${item.name}">
-          <div class="product-type">${typeLabel}</div>
+          <img src="${esc(item.image)}" alt="${esc(item.name)}" loading="lazy">
+          ${badge}
         </div>
         <div class="product-body">
-          <h3 class="product-name">${item.name}</h3>
-          <p class="product-desc">${item.category}</p>
+          <h3 class="product-name">${esc(item.name)}</h3>
+          <p class="product-desc">${esc(item.category)}</p>
           <div class="product-footer">
             <div class="price">Kz ${formatKz(item.price)}</div>
-            <button class="btn btn-outline btn-sm" data-id="${item.id}">Adicionar</button>
+            <button class="btn btn-outline btn-sm" data-id="${esc(item.id)}">Adicionar</button>
           </div>
         </div>
       `;
@@ -179,7 +184,7 @@ Obrigado!`;
     const btn = ev.target.closest('button[data-id]');
     if(!btn) return;
     const id = btn.getAttribute('data-id');
-    const item = catalog.find(i=>i.id === id);
+    const item = catalog.find(i=> String(i.id) === String(id));
     if(!item) return;
     
     cart.push(item);
@@ -241,9 +246,12 @@ Obrigado!`;
   });
 
   // Inicialização
-  renderCatalog();
-  initFilters();
-  bindAddButtons();
-  updateCartUI();
+  (async function init(){
+    await loadCatalog();
+    renderCatalog(currentFilter);
+    initFilters();
+    bindAddButtons();
+    updateCartUI();
+  })();
 
 })();
